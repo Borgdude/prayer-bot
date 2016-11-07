@@ -1,0 +1,19 @@
+{
+  "name": "prayer-bot",
+  "version": "1.0.0",
+  "description": "Prayer requesting on SMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Borgdude/prayer-bot.git"
+  },
+  "author": "Jake Gutierrez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Borgdude/prayer-bot/issues"
+  },
+  "homepage": "https://github.com/Borgdude/prayer-bot#readme"
+}
