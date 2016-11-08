@@ -36,18 +36,21 @@ exports.webhook = function(request, response) {
         var msg = request.body.Body || '';
         msg = msg.toLowerCase().trim();
 
-        console.log(msg.split(' ', 1));
+        //console.log(msg.split(' ', 1));
         // Conditional logic to do different things based on the command from
         // the user
         switch (msg.split(' ', 1)[0]){
           case "commands":
-            respond("Available commands:\n'about':Information about the bot.\n'pray [prayer here]':Use this to submit a prayer.");
+            respond("Available commands:\n'about':Information about the bot.\n'pray [prayer here]':Use this to submit a prayer.\n'ayy':lmao");
             break;
           case "about":
             respond("This bot was crated by Jake Gutierrez.");
             break;
           case "pray":
             processPrayer(member, msg);
+            break;
+          case "ayy"
+            respond("lmao");
             break;
           default:
             respond("Command not found. Type 'commands' for avaiable commands");
