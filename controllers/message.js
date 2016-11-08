@@ -1,4 +1,5 @@
 var Member = require('../models/Member');
+var googleSheets = require('./googleSheets');
 
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = function(request, response) {
@@ -49,8 +50,9 @@ exports.webhook = function(request, response) {
           case "pray":
             processPrayer(member, msg);
             break;
-          case "ayy"
+          case "ayy":
             respond("lmao");
+
             break;
           default:
             respond("Command not found. Type 'commands' for avaiable commands");
@@ -67,7 +69,6 @@ exports.webhook = function(request, response) {
       Member.findOne({
         phone: phone
       })
-      .select('prayers')
       .exec(function(err, member){
         if (err){
           console.log(err);
@@ -80,7 +81,11 @@ exports.webhook = function(request, response) {
               respond("Prayer didnt really work");
               console.log("Prayer didnt really work");
             } else {
-              respond("Prayer received!");
+              googleSheets.addPrayer(member, prayer, function(err){
+                if (err) respond("Something went wrong!");
+
+                respond("Prayer received!");
+              });
             }
           })
         }

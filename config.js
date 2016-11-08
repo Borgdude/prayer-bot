@@ -20,7 +20,13 @@ cfg.twilioNumber = process.env.TWILIO_NUMBER;
 
 // MongoDB connection string - MONGO_URL is for local dev,
 // MONGOLAB_URI is for the MongoLab add-on for Heroku deployment
-cfg.mongoUrl = process.env.MONGOLAB_URI || process.env.MONGO_URL
+cfg.mongoUrl = process.env.MONGOLAB_URI || process.env.MONGO_URL;
+
+//Google Sheets Information
+cfg.sheetsId = process.env.SHEETS_ID;
+
+//Google Auth File
+cfg.authFileName = process.env.GOOGLE_AUTH_FILE;
 
 // Export configuration object
 module.exports = cfg;
