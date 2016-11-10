@@ -5,13 +5,13 @@ Things you need:
 
 * [NodeJS](https://nodejs.org/en/)
 * MongoDB Server
-* [Twillo](https://www.twilio.com/) account and number
+* [Twilio](https://www.twilio.com/) account and number
 
 1. Install/setup necessary software
 2. Clone respository
 3. Run `npm install` in repository
 4. Set enviroment variables (See config.json to see what enviroment variables are needed)
-5. Set up Twillo number and settings
+5. Set up Twilio number and settings
 6. Run `node index.js` to start server
 7. See if it works, if not, check Twillo settings, enviroment variables, and console
 8. If it works, congragulations. You're done!
@@ -19,4 +19,5 @@ Things you need:
 #TODO
 - Add Google Sheets functionality
 - Add web interface
+  - Add login and admin
 - Go from there
