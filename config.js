@@ -28,5 +28,8 @@ cfg.sheetsId = process.env.SHEETS_ID;
 //Google Auth File
 cfg.authFileName = process.env.GOOGLE_AUTH_FILE;
 
+//Groupme Bot ID
+cfg.groupmeBotID = process.env.GROUPMEBOTID;
+
 // Export configuration object
 module.exports = cfg;

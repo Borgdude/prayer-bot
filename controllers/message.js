@@ -1,5 +1,6 @@
 var Member = require('../models/Member');
 var googleSheets = require('./googleSheets');
+var groupMe = require('./groupmeBot');
 
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = function(request, response) {
@@ -42,27 +43,33 @@ exports.webhook = function(request, response) {
         // the user
         switch (msg.split(' ', 1)[0]){
           case "commands":
-            respond("Available commands:\n'about':Information about the bot.\n'pray [prayer here]':Use this to submit a prayer.\n'ayy':lmao");
+            respond("Available commands:\n'about':Information about the bot.\n'pray [prayer here]':Use this to submit a prayer.\n'ayy':lmao\n'urgent [prayer here]': Submit a prayer that will be looked at immediately.");
             break;
           case "about":
-            respond("This bot was crated by Jake Gutierrez.");
+            respond("This bot was created by Jake Gutierrez.");
             break;
           case "pray":
-            processPrayer(member, msg);
+            processPrayer(member, msg, true);
             break;
           case "ayy":
             respond("lmao");
-
+            break;
+          case "urgent":
+            processUrgentPrayer(member, msg);
             break;
           default:
             respond("Command not found. Type 'commands' for avaiable commands");
         }
     }
 
-    function processPrayer(member, message){
-      var prayer = message.split(' ');
-      var com = prayer.shift();
-      prayer = prayer.join(' ');
+    function processPrayer(member, message, filter){
+      var prayer;
+      if (filter){
+        prayer = filterPrayer(message);
+      } else {
+        prayer = message;
+      }
+
 
       console.log(prayer);
 
@@ -91,6 +98,25 @@ exports.webhook = function(request, response) {
         }
 
       });
+    }
+
+    function processUrgentPrayer(member, message){
+      var prayer = filterPrayer(message);
+
+      console.log(prayer);
+      groupMe.sendGroupme(prayer, function(err){
+        if (err) respond("Something went wrong");
+
+        processPrayer(member, message, false);
+      })
+
+    }
+
+    function filterPrayer(message){
+      var prayer = message.split(' ');
+      var com = prayer.shift();
+      prayer = prayer.join(' ');
+      return prayer;
     }
 
     // Set Content-Type response header and render XML (TwiML) response in a

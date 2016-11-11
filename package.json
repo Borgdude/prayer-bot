@@ -23,6 +23,7 @@
     "express": "^4.12.0",
     "express-session": "^1.10.3",
     "google-spreadsheet": "^2.0.3",
+    "groupme": "^0.5.7",
     "http-auth": "^2.2.5",
     "jade": "^1.9.2",
     "mongoose": "^3.8.23",

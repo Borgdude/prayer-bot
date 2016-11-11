@@ -23,7 +23,7 @@ exports.getSheetInfo = function(member, message){
 exports.addPrayer = function(member, message, cb){
   var date = new Date();
   date = date.toDateString();
-  
+
   var rowData = {
     phone: member.phone,
     prayer: message,
