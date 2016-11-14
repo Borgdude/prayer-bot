@@ -1,6 +1,7 @@
 var Member = require('../models/Member');
 var googleSheets = require('./googleSheets');
 var groupMe = require('./groupmeBot');
+var swearjar = require('swearjar');
 
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = function(request, response) {
@@ -69,8 +70,6 @@ exports.webhook = function(request, response) {
       } else {
         prayer = message;
       }
-
-
       console.log(prayer);
 
       Member.findOne({
@@ -94,9 +93,8 @@ exports.webhook = function(request, response) {
                 respond("Prayer received!");
               });
             }
-          })
+          });
         }
-
       });
     }
 
@@ -116,6 +114,7 @@ exports.webhook = function(request, response) {
       var prayer = message.split(' ');
       var com = prayer.shift();
       prayer = prayer.join(' ');
+      prayer = swearjar.censor(prayer);
       return prayer;
     }
 
