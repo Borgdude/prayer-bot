@@ -5,3 +5,4 @@ prayer-bot-3456a54ecedd.json
 client/node_modules
 client/app/*.js
 client/app/*.js.map
+client/dist
