@@ -23,7 +23,6 @@ exports.webhook = function(request, response) {
                 if (err || !newMem)
                     return respond('We couldn\'t sign you up - try again.');
 
-                // We're signed up but not subscribed - prompt to subscribe
                 respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say 'pray [prayer here]' to submit a prayer. Say 'commands' for commmands.");
             });
         } else {
@@ -106,7 +105,7 @@ exports.webhook = function(request, response) {
         if (err) respond("Something went wrong");
 
         processPrayer(member, message, false);
-      })
+      });
 
     }
 

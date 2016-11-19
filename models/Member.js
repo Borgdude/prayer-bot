@@ -12,6 +12,7 @@ var prayerSchema = new mongoose.Schema({
 
 var MembersSchema = new mongoose.Schema({
   phone: String,
+  cooldown: {type: Date},
   prayers: [prayerSchema]
 });
 
