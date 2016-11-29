@@ -1,10 +1,18 @@
 var pages = require('./pages');
 var message = require('./message');
+var group = require('./group');
 
 // Map routes to controller functions
 module.exports = function(app) {
     // Twilio SMS webhook route
     app.post('/message', message.webhook);
+
+    //Group routes
+    app.get('/groups', group.getAllGroups);
+    app.post('/groups', group.createGroup);
+    app.get('/groups/:groupid', group.getOneGroup);
+    app.delete('/groups/:groupid', group.deleteOneGroup);
+    app.put('/groups/:groupid', group.updateGroup);
 
     // Render a page that will allow an administrator to send out a message
     // to all subscribers

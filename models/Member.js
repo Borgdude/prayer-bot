@@ -5,6 +5,7 @@ var config = require('../config');
 var client = twilio(config.accountSid, config.authToken);
 
 var prayerSchema = new mongoose.Schema({
+  urgent: Boolean,
   content: String,
   dateCreated: {type: Date, default: Date.now},
   prayedFor: {type: Boolean, default: false}

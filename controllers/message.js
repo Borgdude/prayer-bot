@@ -38,7 +38,6 @@ exports.webhook = function(request, response) {
         var msg = request.body.Body || '';
         msg = msg.toLowerCase().trim();
 
-        //console.log(msg.split(' ', 1));
         // Conditional logic to do different things based on the command from
         // the user
         switch (msg.split(' ', 1)[0]){
@@ -79,8 +78,10 @@ exports.webhook = function(request, response) {
           console.log(err);
         } else {
           member.prayers.push({
-            content: prayer
+            content: prayer,
+            urgent: !filter 
           });
+          if(!filter) member.cooldown = Date.Now();
           member.save(function(err, member){
             if(err){
               respond("Prayer didnt really work");
@@ -97,6 +98,7 @@ exports.webhook = function(request, response) {
       });
     }
 
+    //For "urgent" prayers
     function processUrgentPrayer(member, message){
       var prayer = filterPrayer(message);
 
@@ -108,7 +110,8 @@ exports.webhook = function(request, response) {
       });
 
     }
-
+    
+    // Filter prayers for naughty words, you never no man
     function filterPrayer(message){
       var prayer = message.split(' ');
       var com = prayer.shift();
