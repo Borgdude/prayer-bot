@@ -111,7 +111,7 @@ exports.webhook = function(request, response) {
 
     }
     
-    // Filter prayers for naughty words, you never no man
+    // Filter prayers for naughty words, you never know man
     function filterPrayer(message){
       var prayer = message.split(' ');
       var com = prayer.shift();
