@@ -1,5 +1,5 @@
 # prayer-bot
-This is an SMS bot powered by Twillo that will allow users to submit a prayer that will be stored in a MongoDB and Google Sheets (soon). In the future, there will be a website that admins can log in to control the bot.
+This is an SMS bot powered by Twilio that will allow users to submit a prayer that will be stored in a MongoDB and Google Sheets (soon). In the future, there will be a website that admins can log in to control the bot.
 ##Installation
 Things you need:
 
