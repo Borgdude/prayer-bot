@@ -1,5 +1,5 @@
 var HTTPS = require("https");
-var config = require('../config');
+var config = require('../../config');
 
 exports.sendGroupme = function(prayer, cb){
   var options, body, botReq;

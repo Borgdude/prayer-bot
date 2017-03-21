@@ -1,9 +1,9 @@
 var GoogleSpreadsheet = require('google-spreadsheet');
-var config = require('../config');
+var config = require('../../config');
 
 var doc = new GoogleSpreadsheet(config.sheetsId);
 var sheet;
-var creds = require('../' + config.authFileName);
+var creds = require('../../' + config.authFileName);
 
 exports.getSheetInfo = function(member, message){
   doc.useServiceAccountAuth(creds, function(err){

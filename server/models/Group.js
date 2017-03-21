@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var config = require('../config');
+var config = require('../../config');
 
 var GroupSchema = new mongoose.Schema({
   groupMeBotID: {type: Number, required: true},

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var twilio = require('twilio');
-var config = require('../config');
+var config = require('../../config');
 
 // create an authenticated Twilio REST API client
 var client = twilio(config.accountSid, config.authToken);
