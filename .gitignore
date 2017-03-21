@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 .env
-prayer-bot-3456a54ecedd.json
+prayer-bot-4e1eccfb1cf4.json
 client/node_modules
 client/app/*.js
 client/app/*.js.map

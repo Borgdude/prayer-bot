@@ -48,26 +48,22 @@ exports.webhook = function(request, response) {
             respond("This bot was created by Jake Gutierrez.");
             break;
           case "pray":
-            processPrayer(member, msg, true);
+            processPrayer(member, filterPrayer(msg), false);
             break;
           case "ayy":
             respond("lmao");
             break;
           case "urgent":
-            processUrgentPrayer(member, msg);
+            processUrgentPrayer(member, filterPrayer(msg));
             break;
           default:
             respond("Command not found. Type 'commands' for avaiable commands");
         }
     }
 
-    function processPrayer(member, message, filter){
-      var prayer;
-      if (filter){
-        prayer = filterPrayer(message);
-      } else {
-        prayer = message;
-      }
+    function processPrayer(member, message, urgent){
+      var prayer = message;
+      debugger;
       console.log(prayer);
 
       Member.findOne({
@@ -79,18 +75,19 @@ exports.webhook = function(request, response) {
         } else {
           member.prayers.push({
             content: prayer,
-            urgent: !filter 
+            urgent: urgent
           });
-          if(!filter) member.cooldown = Date.Now();
           member.save(function(err, member){
             if(err){
-              respond("Prayer didnt really work");
+              return respond("Prayer didnt really work");
               console.log("Prayer didnt really work");
             } else {
               googleSheets.addPrayer(member, prayer, function(err){
-                if (err) respond("Something went wrong!");
-
-                respond("Prayer received!");
+                if (err) {
+                  return respond("Something went wrong!");
+                } else {
+                  return respond("Prayer received!");
+                }
               });
             }
           });
@@ -100,17 +97,19 @@ exports.webhook = function(request, response) {
 
     //For "urgent" prayers
     function processUrgentPrayer(member, message){
-      var prayer = filterPrayer(message);
+      var prayer = message;
 
       console.log(prayer);
       groupMe.sendGroupme(prayer, function(err){
-        if (err) respond("Something went wrong");
-
-        processPrayer(member, message, false);
+        if (err){
+          return respond("Something went wrong");
+        } else {
+          processPrayer(member, message, true);
+        }
       });
 
     }
-    
+
     // Filter prayers for naughty words, you never know man
     function filterPrayer(message){
       var prayer = message.split(' ');

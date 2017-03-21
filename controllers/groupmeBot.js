@@ -23,16 +23,16 @@ exports.sendGroupme = function(prayer, cb){
         //neat
       } else {
         console.log('rejecting bad status code ' + res.statusCode);
-        return cb(err);
+        // return cb(res.statusCode);
       }
   });
 
   botReq.on('error', function(err) {
-    console.log('error posting message '  + JSON.stringify(err));
+    console.log('error posting message ' + JSON.stringify(err));
     return cb(err);
   });
   botReq.on('timeout', function(err) {
-    console.log('timeout posting message '  + JSON.stringify(err));
+    console.log('timeout posting message ' + JSON.stringify(err));
     return cb(err);
   });
   botReq.end(JSON.stringify(body));
