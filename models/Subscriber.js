@@ -49,9 +49,9 @@ SubscriberSchema.statics.sendMessage = function(message, url, callback) {
                     console.error(err);
                 } else {
                     // Log the last few digits of a phone number
-                    var masked = subscriber.phone.substr(0, 
+                    var masked = subscriber.phone.substr(0,
                         subscriber.phone.length - 5);
-                    masked += '*****'; 
+                    masked += '*****';
                     console.log('Message sent to ' + masked);
                 }
             });

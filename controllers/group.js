@@ -73,7 +73,7 @@ module.exports.deleteOneGroup = function(req, res){
       if(err) sendJsonResponse(res, 400, err);
 
       sendJsonResponse(res, 200, group);
-      
+
     });
   } else {
     sendJsonResponse(res, 400, { "message": "No Group ID"});
