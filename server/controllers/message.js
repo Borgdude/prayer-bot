@@ -1,4 +1,5 @@
-var Member = require('../models/Member');
+var Member = require('../models').Member;
+var PrayerItem = require('../models').PrayerItem;
 var googleSheets = require('./googleSheets');
 var groupMe = require('./groupmeBot');
 var swearjar = require('swearjar');
@@ -10,26 +11,26 @@ exports.webhook = function(request, response) {
     var phone = request.body.From;
 
     Member.findOne({
-        phone: phone
-    }, function(err, mem) {
-        if (err) return respond('Derp! Please text back again later.');
-
-        if (!mem) {
-            var newMember = new Member({
-                phone: phone
-            });
-
-            newMember.save(function(err, newMem) {
-                if (err || !newMem)
-                    return respond('We couldn\'t sign you up - try again.');
-
-                respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say 'pray [prayer here]' to submit a prayer. Say 'commands' for commmands.");
-            });
-        } else {
-            // For an existing user, process any input message they sent and
-            // send back an appropriate message
-            processMessage(mem);
-        }
+      where: {phoneNumber: phone}
+    })
+    .then((member) => {
+      if(!member){
+        Member.create({
+          phoneNumber: phone
+        })
+        .then((member) => {
+          return respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say 'pray [prayer here]' to submit a prayer. Say 'commands' for commmands.");
+        })
+        .catch((error) => {
+          console.log(error);
+          return respond('We couldn\'t sign you up - try again.');
+        });
+      } else {
+        processMessage(member);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
 
     // Process any message the user sent to us
@@ -63,35 +64,32 @@ exports.webhook = function(request, response) {
 
     function processPrayer(member, message, urgent){
       var prayer = message;
-      debugger;
       console.log(prayer);
 
       Member.findOne({
-        phone: phone
+        where: {phoneNumber: phone}
       })
-      .exec(function(err, member){
-        if (err){
-          console.log(err);
-        } else {
-          member.prayers.push({
-            content: prayer,
-            urgent: urgent
-          });
-          member.save(function(err, member){
-            if(err){
-              return respond("Prayer didnt really work");
-              console.log("Prayer didnt really work");
+      .then((member) => {
+        PrayerItem.create({
+          content: message,
+          memberId: member.id
+        })
+        .then((prayerItem) => {
+          googleSheets.addPrayer(member, prayer, function(err){
+            if (err) {
+              return respond("Something went wrong!");
             } else {
-              googleSheets.addPrayer(member, prayer, function(err){
-                if (err) {
-                  return respond("Something went wrong!");
-                } else {
-                  return respond("Prayer received!");
-                }
-              });
+              return respond("Prayer received!");
             }
           });
-        }
+        })
+        .catch((error) => {
+          console.log(error);
+          return respond("Prayer didnt really work");
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
     }
 

@@ -1,21 +1,18 @@
-var mongoose = require('mongoose');
-var twilio = require('twilio');
-var config = require('../../config');
-
-var client = twilio(config.accountSid, config.authToken);
-
-var prayerSchema = new mongoose.Schema({
-  urgent: Boolean,
-  content: String,
-  dateCreated: {type: Date, default: Date.now},
-  prayedFor: {type: Boolean, default: false}
-});
-
-var MembersSchema = new mongoose.Schema({
-  phone: String,
-  cooldown: {type: Date},
-  prayers: [prayerSchema]
-});
-
-var Member = mongoose.model('Member', MembersSchema);
-module.exports = Member;
+module.exports = (sequelize, DataTypes) => {
+  const Member = sequelize.define('Member', {
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  }, {
+    classMethods: {
+      associate: (models) => {
+        Member.hasMany(models.PrayerItem, {
+          foreignKey: 'memberId',
+          as: 'prayerItems',
+        });
+      }
+    }
+  });
+  return Member;
+};
