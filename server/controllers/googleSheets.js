@@ -20,12 +20,13 @@ exports.getSheetInfo = function(member, message){
   });
 };
 
-exports.addPrayer = function(member, message, cb){
+exports.addPrayer = function(phone, message, cb){
   var date = new Date();
   date = date.toDateString();
 
+
   var rowData = {
-    phone: member.phone,
+    phone: phone,
     prayer: message,
     date: date
   };
@@ -34,15 +35,18 @@ exports.addPrayer = function(member, message, cb){
     doc.getInfo(function(err, info) {
       if(err) return cb(err);
       console.log('Loaded doc: '+info.title+' by '+info.author.email);
-      sheet = info.worksheets[0];
-      console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
+      sheet = info.worksheets[info.worksheets.length - 1];
+      console.log('Loaded: '+sheet.title);
+      sheet.setHeaderRow(['phone', 'prayer', 'date'], function(err){
+        if(err) throw err;
+      });
       sheet.addRow(rowData, function(err){
         if (err){
           console.log(err);
           return cb(err);
         } else {
-          return cb(null);
           console.log('Prayer entered');
+          return cb(null);
         }
       })
     });
