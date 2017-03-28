@@ -34,6 +34,9 @@ app.use(flash());
 
 // Configure application routes
 require('./server/controllers/router')(app);
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+});
 
 // Handle 404
 app.use(function (request, response, next) {

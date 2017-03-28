@@ -36,7 +36,7 @@ exports.webhook = (request, response) => {
         // get the text message command sent by the user
         var msg = request.body.Body || '';
         msg = msg.toLowerCase().trim();
-        
+
         // Conditional logic to do different things based on the command from
         // the user
         switch (msg.split(' ', 1)[0]){
@@ -47,7 +47,7 @@ exports.webhook = (request, response) => {
             respond("This bot was created by Jake Gutierrez.");
             break;
           case "pray":
-            processPrayer(member, filterPrayer(msg), false);
+            processPrayer(member, filterPrayer(msg));
             break;
           case "ayy":
             respond("lmao");
@@ -60,7 +60,7 @@ exports.webhook = (request, response) => {
         }
     }
 
-    function processPrayer(member, message, urgent){
+    function processPrayer(member, message){
       var prayer = message;
 
       Member.findOne({
@@ -84,8 +84,8 @@ exports.webhook = (request, response) => {
 
     function addPrayerToSheets(member, prayer){
       return new Promise((resolve, reject) => {
-        googleSheets.addPrayer(member, prayer, function(err){
-          if (err) reject(new Error("googleSheets didnt work"));
+        googleSheets.addPrayer(phone, prayer, function(err){
+          if (err) reject(new Error(err));
 
           resolve("Prayer received!");
         });
@@ -98,7 +98,7 @@ exports.webhook = (request, response) => {
 
       console.log(prayer);
       groupMe.sendGroupme(prayer)
-      .then((message) => processPrayer(member, message, true))
+      .then((message) => processPrayer(member, prayer))
       .catch((err) => {
         console.log(err);
         return respond("Something went wrong!");
