@@ -1,12 +1,12 @@
 import React from 'react';
-
+import { Grid } from 'react-flexbox-grid';
 import Nav from './Nav.jsx'
 
 var Main = (props) =>{
   return(
-      <div>
+      <Grid fluid className="main-container">
         <Nav content={props.children}/>
-      </div>
+      </Grid>
   );
 }
 

@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'memberId',
           onDelete: 'CASCADE'
         });
+      },
+      completePrayersAndSendMessage: () => {
+        var Member = sequelize.models.member;
+
+        return PrayerItem.update({complete: true}, { where: {complete: false}})
       }
     }
   });

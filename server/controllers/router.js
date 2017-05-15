@@ -1,6 +1,7 @@
 var pages = require('./pages');
 var message = require('./message');
 var memberCtrl = require('./membersCtrl');
+var prayerCtrl = require('./prayerCtrl');
 
 // Map routes to controller functions
 module.exports = function(app) {
@@ -23,4 +24,7 @@ module.exports = function(app) {
 
     app.get('/members', memberCtrl.getAllMembers);
     app.get('/members/:memberid', memberCtrl.getOneMember);
+
+    app.get('/prayers/oneUnprayed', prayerCtrl.getOneUnprayedFor);
+    app.put('/prayers/all', prayerCtrl.updateAllPrayers);
 };

@@ -1,48 +1,66 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell } from 'react-toolbox';
+import { Table, TableHead, TableRow, TableCell, Panel } from 'react-toolbox';
+import { Row, Col } from 'react-flexbox-grid';
 
-const MemberModel = {
-  phone: {type: String},
-  prayer: {type: String},
-  prayedFor: {type: Boolean}
-};
+var memberService = require('../api/memberService');
 
-const members = [
-  {phone: '9796763030', prayer: "i think its hilarious u guys talk shit about anime. u wouldn't say this shit about it in japan, they're samurai. not only that but they wears the freshest katanas, eats at the chillest ramen stands and hangs out with the hottest lolis. yall are pathetic lol.", prayerFor: false},
-  {phone: '9796763030', prayer: 'ayasdfo', prayerFor: false},
-  {phone: '9796763030', prayer: 'aasdfao', prayerFor: false},
-  {phone: '9796763030', prayer: 'ayy asdfo', prayerFor: false},
-];
 const Members = React.createClass({
   getInitialState: function(){
     return {
-      source: members
+      source: []
     }
+  },
+
+  componentDidMount: function(){
+    var that = this;
+    memberService.getAllMembers().then(function(data){
+      that.setState({
+        source: data
+      });
+    }, function(e){
+        console.log(e);
+    });
   },
 
   handleSelect: function(selected){
     alert(selected);
-    //ayalm o
+  },
+
+  returnFormatedDate: function(string){
+    var d = new Date(string);
+    return d.toDateString();
   },
 
   render: function() {
     return(
       <div>
-        <h1>Members</h1>
-        <Table>
-          <TableHead>
-            <TableCell>Phone Number</TableCell>
-            <TableCell>Prayer</TableCell>
-            <TableCell>Prayed For</TableCell>
-          </TableHead>
-        {members.map((item, idx) => (
-          <TableRow key={idx}>
-            <TableCell>{item.phone}</TableCell>
-            <TableCell>{item.prayer}</TableCell>
-            <TableCell>{item.prayerFor.toString()}</TableCell>
-          </TableRow>
-        ))}
-        </Table>
+        <Row center="xs">
+          <Col xs={12} sm={10} md={8} lg={8}>
+            <h1 className="header">Prayer Requests</h1>
+          </Col>
+        </Row>
+        <Row center="xs">
+          <Col xs={12} sm={10} md={8} lg={8}>
+              <Table selectable={false}>
+                <TableHead displaySelect={false}>
+                  <TableCell>Phone Number</TableCell>
+                  <TableCell>Prayer</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Prayed For</TableCell>
+                </TableHead>
+              {this.state.source.map((item) => (
+                item.prayerItems.map((prayerItem, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>{item.phoneNumber}</TableCell>
+                    <TableCell>{prayerItem.content}</TableCell>
+                    <TableCell>{this.returnFormatedDate(prayerItem.createdAt)}</TableCell>
+                    <TableCell>{prayerItem.complete.toString()}</TableCell>
+                  </TableRow>
+                ))
+              ))}
+              </Table>
+          </Col>
+        </Row>
       </div>
     );
   }

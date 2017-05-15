@@ -1,0 +1,38 @@
+body {
+  margin: 0 auto;
+}
+#app{
+  background: url('http://www.yosemitehikes.com/images/wallpaper/yosemitehikes.com-valley-winter-1920x1200.jpg');
+  background-position: center;
+  background-attachment: fixed;/* fallback for old browsers */
+  //background: -webkit-linear-gradient(to left, #4B1248, #F0C27B);  /* Chrome 10-25, Safari 5.1-6 */
+  //background: linear-gradient(to left, #4B1248, #F0C27B); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+h1, h2, h3 {
+  //
+}
+.header{
+  width: 100%;
+  text-align: left;
+}
+
+.prayercard{
+  h2, h3 {
+    font-weight: normal;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  width: 300px;
+  height: 300px;
+  padding: 50px;
+  -webkit-box-shadow: 0px 6px 65px -10px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 6px 65px -10px rgba(0,0,0,0.75);
+  box-shadow: 0px 6px 65px -10px rgba(0,0,0,0.75);  
+  border-radius: 5px;
+  background-color: white;
+}
+.prayercard-buttons{
+  button{
+    margin: 10px;
+  }
+}

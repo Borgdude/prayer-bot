@@ -24,7 +24,6 @@ exports.addPrayer = function(phone, message, cb){
   var date = new Date();
   date = date.toDateString();
 
-
   var rowData = {
     phone: phone,
     prayer: message,
