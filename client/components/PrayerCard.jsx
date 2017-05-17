@@ -8,6 +8,12 @@ const PrayerCard = React.createClass({
     return d.toDateString();
   },
 
+  onPrayedClick: function(e){
+    e.preventDefault();
+    console.log("Button clicked");
+    
+    this.props.prayedFor();
+  },
 
   render: function() {
     return(
@@ -17,8 +23,7 @@ const PrayerCard = React.createClass({
           <h3>Submitted: {this.returnFormatedDate(this.props.date)}</h3>
         </div>
         <div className="prayercard-buttons">
-          <Button onClick={this.props.prayedFor} icon="check" label="Prayed For" raised primary />
-          <Button icon="clear" label="Skip Prayer" raised accent />
+          <Button onClick={this.onPrayedClick} icon="check" label="Prayed For" raised primary />
         </div>
       </div>
 

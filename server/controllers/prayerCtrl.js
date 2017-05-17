@@ -43,7 +43,7 @@ exports.getOneUnprayedFor = (req, res) => {
   PrayerItem
     .findOne({where: {complete: false}}).then(prayer => {
       if(!prayer){
-        res.status(400).send({"message":"All Prayers Completed"});
+        res.status(204).send({"message":"All Prayers Completed"});
       } else {
         res.status(200).send(prayer);
       }
@@ -52,5 +52,16 @@ exports.getOneUnprayedFor = (req, res) => {
     .catch((err) => {
       console.log("Unprayed For Not Found");
       res.status(404).send(err);
+    });
+}
+
+exports.updateOnePrayer = (req, res) => {
+  PrayerItem
+    .update({complete: true}, {where: { id: req.params.prayerid }})
+    .then((result) => {
+      res.status(200).send({"message": "Updated Successfully"});
+    })
+    .catch((err) => {
+      res.status(400).send(err);
     });
 }

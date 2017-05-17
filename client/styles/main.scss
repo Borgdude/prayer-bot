@@ -31,8 +31,21 @@ h1, h2, h3 {
   border-radius: 5px;
   background-color: white;
 }
+
 .prayercard-buttons{
   button{
     margin: 10px;
   }
+}
+
+.allPrayedFor-message{
+  font-weight: normal;
+  color: #333;
+  background: #a5d6a7;
+  padding: 15px;
+  border: 1px solid #2e7d32;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 6px 65px -10px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 6px 65px -10px rgba(0,0,0,0.75);
+  box-shadow: 0px 6px 65px -10px rgba(0,0,0,0.75); 
 }

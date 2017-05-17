@@ -27,4 +27,5 @@ module.exports = function(app) {
 
     app.get('/prayers/oneUnprayed', prayerCtrl.getOneUnprayedFor);
     app.put('/prayers/all', prayerCtrl.updateAllPrayers);
+    app.put('/prayers/:prayerid', prayerCtrl.updateOnePrayer);
 };
