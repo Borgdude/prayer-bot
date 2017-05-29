@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     complete: {
       type: DataTypes.STRING,
       defaultValue: false
+    },
+    prayedForNumber: {
+      type: DataTypes.STRING,
+      defaultValue: 0
     }
   }, {
     classMethods: {

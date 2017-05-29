@@ -20,5 +20,13 @@ module.exports = {
       console.log(err);
       throw new Error("Prayer did not update succesffuly");
     })
+  },
+  getAllPrayers: function(){
+    return axios.get('prayers/all').then(function(res){
+      return res.data;
+    }, function(err){
+      console.log(err);
+      throw new Error("Error when getting all prayers.")
+    });
   }
 }

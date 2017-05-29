@@ -26,6 +26,7 @@ module.exports = function(app) {
     app.get('/members/:memberid', memberCtrl.getOneMember);
 
     app.get('/prayers/oneUnprayed', prayerCtrl.getOneUnprayedFor);
+    app.get('/prayers/all', prayerCtrl.getAllPrayers)
     app.put('/prayers/all', prayerCtrl.updateAllPrayers);
     app.put('/prayers/:prayerid', prayerCtrl.updateOnePrayer);
 };

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "webpack-dev-server"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,6 @@
     "http-auth": "^2.2.5",
     "jade": "^1.9.2",
     "material-ui": "^0.16.4",
-    "mongoose": "^4.4.12",
     "morgan": "^1.5.1",
     "pg": "^6.1.5",
     "pg-hstore": "^2.3.2",

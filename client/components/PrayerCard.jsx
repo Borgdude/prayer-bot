@@ -15,18 +15,22 @@ const PrayerCard = React.createClass({
     this.props.prayedFor();
   },
 
+  handleClick: function(){
+    alert(this.props.prayerID);
+  },
+
   render: function() {
     return(
-      <div>
-        <div className="prayercard">
+      <div className="prayercard">
+        <div className="prayer-info">
           <h2>{this.props.content}</h2>
           <h3>Submitted: {this.returnFormatedDate(this.props.date)}</h3>
         </div>
-        <div className="prayercard-buttons">
-          <Button onClick={this.onPrayedClick} icon="check" label="Prayed For" raised primary />
+        <div>
+          <p>Prayed for: {this.props.prayedForNumber} times</p>
+          <Button onClick={this.handleClick} label="Prayed For" raised />
         </div>
       </div>
-
     );
   }
 });

@@ -24,15 +24,15 @@ var Nav = React.createClass({
             Navigation, account switcher, etc. go here.
           </div>
         </Drawer>
-          <AppBar
-             leftIcon='menu'
-             onLeftIconClick={ this.toggleDrawerActive }
-             title="Prayer-bot"
-             fixed
-             />
-           <div style={{ marginTop:'2rem', paddingTop: '1.8rem' }}>
-              {this.props.content}
-          </div>
+        <AppBar
+            leftIcon='menu'
+            onLeftIconClick={ this.toggleDrawerActive }
+            title="Prayer-bot"
+            fixed
+            />
+        <div style={{ marginTop:'2rem', paddingTop: '1.8rem' }}>
+            {this.props.content}
+        </div>
       </Layout>
     );
   }

@@ -58,8 +58,9 @@
 	var Main = __webpack_require__(237);
 	var Members = __webpack_require__(569);
 	var PrayFor = __webpack_require__(596);
+	var Prayers = __webpack_require__(599);
 
-	__webpack_require__(599);
+	__webpack_require__(600);
 
 	ReactDOM.render(React.createElement(
 	  Router,
@@ -68,7 +69,7 @@
 	    Route,
 	    { path: '/', component: Main },
 	    React.createElement(Route, { path: 'prayfor', component: PrayFor }),
-	    React.createElement(IndexRoute, { component: Members })
+	    React.createElement(IndexRoute, { component: Prayers })
 	  )
 	), document.getElementById('app'));
 
@@ -53214,13 +53215,17 @@
 	    this.props.prayedFor();
 	  },
 
+	  handleClick: function handleClick() {
+	    alert(this.props.prayerID);
+	  },
+
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
-	      null,
+	      { className: 'prayercard' },
 	      _react2.default.createElement(
 	        'div',
-	        { className: 'prayercard' },
+	        { className: 'prayer-info' },
 	        _react2.default.createElement(
 	          'h2',
 	          null,
@@ -53235,8 +53240,15 @@
 	      ),
 	      _react2.default.createElement(
 	        'div',
-	        { className: 'prayercard-buttons' },
-	        _react2.default.createElement(_button.Button, { onClick: this.onPrayedClick, icon: 'check', label: 'Prayed For', raised: true, primary: true })
+	        null,
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Prayed for: ',
+	          this.props.prayedForNumber,
+	          ' times'
+	        ),
+	        _react2.default.createElement(_button.Button, { onClick: this.handleClick, label: 'Prayed For', raised: true })
 	      )
 	    );
 	  }
@@ -53272,6 +53284,14 @@
 	      console.log(err);
 	      throw new Error("Prayer did not update succesffuly");
 	    });
+	  },
+	  getAllPrayers: function getAllPrayers() {
+	    return axios.get('prayers/all').then(function (res) {
+	      return res.data;
+	    }, function (err) {
+	      console.log(err);
+	      throw new Error("Error when getting all prayers.");
+	    });
 	  }
 	};
 
@@ -53279,10 +53299,105 @@
 /* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactFlexboxGrid = __webpack_require__(238);
+
+	var _PrayerCard = __webpack_require__(597);
+
+	var _PrayerCard2 = _interopRequireDefault(_PrayerCard);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var prayerService = __webpack_require__(598);
+
+	var Prayers = _react2.default.createClass({
+	  displayName: 'Prayers',
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      prayers: [],
+	      error: false
+	    };
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    var that = this;
+
+	    prayerService.getAllPrayers().then(function (data) {
+	      that.setState({
+	        prayers: data
+	      });
+	    }, function (err) {
+	      that.setState({
+	        prayers: undefined,
+	        error: err
+	      });
+	    });
+	  },
+
+	  render: function render() {
+	    var _state = this.state,
+	        prayers = _state.prayers,
+	        error = _state.error;
+
+
+	    function renderError() {
+	      if (error) {
+	        return _react2.default.createElement(
+	          'h3',
+	          null,
+	          error
+	        );
+	      }
+	    }
+
+	    return _react2.default.createElement(
+	      'div',
+	      null,
+	      _react2.default.createElement(
+	        _reactFlexboxGrid.Row,
+	        { center: 'xs' },
+	        _react2.default.createElement(
+	          _reactFlexboxGrid.Col,
+	          { xs: 12 },
+	          _react2.default.createElement(
+	            'h1',
+	            { className: 'header' },
+	            'Prayer Requests'
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        _reactFlexboxGrid.Row,
+	        { center: 'xs' },
+	        renderError(),
+	        prayers.map(function (item, idx) {
+	          return _react2.default.createElement(
+	            _reactFlexboxGrid.Col,
+	            { key: idx, xs: 12, sm: 6, md: 4, lg: 3 },
+	            _react2.default.createElement(_PrayerCard2.default, { prayerID: item.id, content: item.content, date: item.createdAt, prayedForNumber: item.prayedForNumber })
+	          );
+	        })
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Prayers;
+
+/***/ },
+/* 600 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(600);
+	var content = __webpack_require__(601);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(248)(content, {});
@@ -53302,7 +53417,7 @@
 	}
 
 /***/ },
-/* 600 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(243)(undefined);
@@ -53310,7 +53425,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  margin: 0 auto; }\n\n#app {\n  background: url(\"http://www.yosemitehikes.com/images/wallpaper/yosemitehikes.com-valley-winter-1920x1200.jpg\");\n  background-position: center;\n  background-attachment: fixed;\n  /* fallback for old browsers */ }\n\n.header {\n  width: 100%;\n  text-align: left; }\n\n.prayercard {\n  width: 300px;\n  height: 300px;\n  padding: 50px;\n  -webkit-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  -moz-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  border-radius: 5px;\n  background-color: white; }\n  .prayercard h2, .prayercard h3 {\n    font-weight: normal;\n    padding-top: 10px;\n    padding-bottom: 10px; }\n\n.prayercard-buttons button {\n  margin: 10px; }\n\n.allPrayedFor-message {\n  font-weight: normal;\n  color: #333;\n  background: #a5d6a7;\n  padding: 15px;\n  border: 1px solid #2e7d32;\n  border-radius: 3px;\n  -webkit-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  -moz-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75); }\n", ""]);
+	exports.push([module.id, "body {\n  margin: 0 auto; }\n\n#app {\n  background: url(\"http://www.yosemitehikes.com/images/wallpaper/yosemitehikes.com-valley-winter-1920x1200.jpg\");\n  background-position: center;\n  background-attachment: fixed;\n  /* fallback for old browsers */ }\n\n.header {\n  width: 100%;\n  text-align: left; }\n\n.prayercard {\n  margin-top: 10px;\n  width: auto;\n  height: auto;\n  padding: 20px;\n  -webkit-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  -moz-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  border-radius: 5px;\n  background-color: white; }\n  .prayercard h2, .prayercard h3 {\n    font-weight: normal;\n    padding-top: 10px;\n    padding-bottom: 10px; }\n\n.prayercard-buttons button {\n  margin: 10px; }\n\n.allPrayedFor-message {\n  font-weight: normal;\n  color: #333;\n  background: #a5d6a7;\n  padding: 15px;\n  border: 1px solid #2e7d32;\n  border-radius: 3px;\n  -webkit-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  -moz-box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75);\n  box-shadow: 0px 6px 65px -10px rgba(0, 0, 0, 0.75); }\n", ""]);
 
 	// exports
 

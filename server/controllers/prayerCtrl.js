@@ -65,3 +65,10 @@ exports.updateOnePrayer = (req, res) => {
       res.status(400).send(err);
     });
 }
+
+exports.getAllPrayers = (req, res) => {
+  return PrayerItem
+    .findAll()
+    .then(prayers => res.status(200).send(prayers))
+    .catch(error => res.status(400).send(error));
+}
