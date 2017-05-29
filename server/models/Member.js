@@ -19,13 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     instanceMethods: {
-      sendMessage: (message) => {
+      sendMessage: (phone, prayer) => {
         return new Promise(function(resolve, reject) {
-          this.phoneNumber = phone;
           var options = {
             to: phone,
             from: config.twilioNumber,
-            body: message
+            body: "Your prayer: '" + prayer + "' has been prayed for!"
           };
 
           client.sendMessage(options, function(err, response){
