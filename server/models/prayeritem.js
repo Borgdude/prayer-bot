@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
 
         return PrayerItem.update({complete: true}, { where: {complete: false}})
       }
+    },
+    instanceMethods:{
+      getPrayerContent: function(){
+        return this.content;
+      }
     }
   });
   return PrayerItem;
