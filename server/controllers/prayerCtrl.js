@@ -5,7 +5,7 @@ var findMemberAndSendMessage = (values) => {
     return Member
       .findById(values.memberId)
       .then((member) => {
-        member.sendMessage(member.phoneNumber, values.content);
+        return member.sendMessage(member.phoneNumber, values.content);
       })
       .catch((err) => res.status(400).send(err));
  }
@@ -41,6 +41,9 @@ exports.updateOnePrayer = (req, res) => {
     .update({complete: true}, {where: { id: req.params.prayerid }, returning: true})
     .spread((affectedCount, affectedRows) => {
       return findMemberAndSendMessage(affectedRows[0].dataValues);
+    })
+    .then(()=>{
+      res.status(200).send({"Success": true});
     })
     .catch((err) => {
       res.status(400).send(err);
