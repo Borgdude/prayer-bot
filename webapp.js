@@ -5,6 +5,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var morgan = require('morgan');
 var config = require('./config');
+var passport = require('passport');
 
 // Create Express web app
 var app = express();
@@ -21,6 +22,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(passport.initialize());
+
+const localSignupStrategy = require('./server/passport/local-signup');
+const localLoginStrategy = require('./server/passport/local-login');
+passport.use('local-signup', localSignupStrategy);
+passport.use('local-login', localLoginStrategy);
+
+const authCheckMiddleware = require('./server/middleware/auth-check');
+app.use('/api', authCheckMiddleware);
+
+const authRoutes = require('./server/routes/auth');
+const apiRoutes = require('./server/routes/api');
+app.use('/auth', authRoutes);
+app.use('/api', apiRoutes);
 
 // Create and manage HTTP sessions for all requests
 app.use(session({

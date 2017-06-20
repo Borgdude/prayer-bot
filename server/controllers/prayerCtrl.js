@@ -72,3 +72,11 @@ exports.getAllPrayers = (req, res) => {
     .then(prayers => res.status(200).send(prayers))
     .catch(error => res.status(400).send(error));
 }
+
+exports.incrementOnePrayer = (req, res) => {
+  return PrayerItem
+    .findById(req.params.prayerid)
+    .then((prayer) => prayer.increment('prayedForNumber'))
+    .then((whatever) => res.status(200).send(whatever))
+    .catch((err) => res.status(400).send(err))
+}

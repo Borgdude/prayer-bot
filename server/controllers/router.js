@@ -2,6 +2,7 @@ var pages = require('./pages');
 var message = require('./message');
 var memberCtrl = require('./membersCtrl');
 var prayerCtrl = require('./prayerCtrl');
+var authCheckMiddleware = require('../middleware/auth-check');
 
 // Map routes to controller functions
 module.exports = function(app) {
@@ -29,4 +30,5 @@ module.exports = function(app) {
     app.get('/prayers/all', prayerCtrl.getAllPrayers)
     app.put('/prayers/all', prayerCtrl.updateAllPrayers);
     app.put('/prayers/:prayerid', prayerCtrl.updateOnePrayer);
+    app.put('/prayers/increment/:prayerid', authCheckMiddleware, prayerCtrl.incrementOnePrayer)
 };

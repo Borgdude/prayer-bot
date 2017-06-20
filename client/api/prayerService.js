@@ -1,4 +1,7 @@
 var axios = require('axios');
+import Auth from './Auth';
+
+axios.defaults.headers.common['Authorization'] = `bearer ${Auth.getToken()}`;
 
 module.exports = {
   getUnprayedFor: function(){
@@ -19,7 +22,7 @@ module.exports = {
     }, function(err){
       console.log(err);
       throw new Error("Prayer did not update succesffuly");
-    })
+    });
   },
   getAllPrayers: function(){
     return axios.get('prayers/all').then(function(res){
@@ -27,6 +30,14 @@ module.exports = {
     }, function(err){
       console.log(err);
       throw new Error("Error when getting all prayers.")
+    });
+  },
+  incrementOnePrayer: function(prayerid){
+    return axios.put("/prayers/increment/" + prayerid).then(function(res){
+      return res.data;
+    }, function(err){
+      console.log(err);
+      throw new Error("Prayer did not update succesffuly");
     });
   }
 }
