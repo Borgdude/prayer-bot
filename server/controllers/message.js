@@ -16,14 +16,14 @@ exports.webhook = (request, response) => {
     .then((member) => {
       if(!member) {
         createMember(member, phone);
-        respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say 'pray [prayer here]' to submit a prayer. Say 'commands' for commmands.");
+        respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say \"pray [prayer here]\" to submit a prayer. Say \"commands\" for commmands.");
       } else {
         processMessage(member);
       }
     })
     .catch((err) => {
-      return respond("Couldn't sign you up, try again!");
       console.log(err);
+      return respond("Couldn't sign you up, try again!");
     });
 
     function createMember(member, phone){
@@ -41,7 +41,7 @@ exports.webhook = (request, response) => {
         // the user
         switch (msg.split(' ', 1)[0]){
           case "commands":
-            respond("Available commands:\n'about':Information about the bot.\n'pray [prayer here]': Use this to submit a prayer.\n'ayy':lmao\n'urgent [prayer here]': Submit a prayer that will be looked at immediately.");
+            respond("Available commands:\n\"about\": Information about the bot.\n\"pray [prayer here]\": Use this to submit a prayer.\n\"ayy\: lmao\n\"urgent [prayer here]\": Submit a prayer that will be looked at immediately.");
             break;
           case "about":
             respond("This bot was created by Jake Gutierrez.");

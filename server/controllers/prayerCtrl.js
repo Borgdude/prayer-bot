@@ -1,42 +1,23 @@
 var Member = require('../models').Member;
 var PrayerItem = require('../models').PrayerItem;
 
+var findMemberAndSendMessage = (values) => {
+    return Member
+      .findById(values.memberId)
+      .then((member) => {
+        return member.sendMessage(member.phoneNumber, values.content);
+      })
+      .catch((err) => res.status(400).send(err));
+ }
+
 exports.updateAllPrayers = (req, res) => {
   PrayerItem
     .update({complete: true}, { where: {complete: false}, returning: true})
-    .spread((affectedCount, affectedRows) => sendMessage(affectedRows))
     .then((result) => {
       console.log(result);
       res.status(200).send(result)
     })
     .catch((err) => res.status(400).send(err));
-
-  var sendMessage = (prayerItems) => {
-    return new Promise(function(resolve, reject) {
-      var result = [];
-
-      if(!prayerItems) {
-        reject("No prayer items");
-      }
-      prayerItems.forEach((item) => {
-        console.log(item.id);
-        result.push({phone: findMember(item).next(), prayer: item.content})
-      });
-
-      console.log(result);
-      resolve(result);
-    });
-
-  }
-
-  function findMember (item){
-    return Member
-      .findById(item.memberId)
-      .then((member) => {
-        return member
-      })
-      .catch((err) => new Error (err));
-  }
 }
 
 exports.getOneUnprayedFor = (req, res) => {
@@ -57,13 +38,18 @@ exports.getOneUnprayedFor = (req, res) => {
 
 exports.updateOnePrayer = (req, res) => {
   PrayerItem
-    .update({complete: true}, {where: { id: req.params.prayerid }})
-    .then((result) => {
-      res.status(200).send({"message": "Updated Successfully"});
+    .update({complete: true}, {where: { id: req.params.prayerid }, returning: true})
+    .spread((affectedCount, affectedRows) => {
+      return findMemberAndSendMessage(affectedRows[0].dataValues);
+    })
+    .then(()=>{
+      res.status(200).send({"Success": true});
     })
     .catch((err) => {
       res.status(400).send(err);
     });
+
+  
 }
 
 exports.getAllPrayers = (req, res) => {

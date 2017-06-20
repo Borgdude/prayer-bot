@@ -15,7 +15,7 @@ app.set('view engine', 'jade');
 app.use(morgan('combined'));
 
 // Serve static assets
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static(path.join(__dirname, 'client')));
 
 // Parse incoming form-encoded HTTP bodies
@@ -50,9 +50,9 @@ app.use(flash());
 
 // Configure application routes
 require('./server/controllers/router')(app);
-app.get('*', function (request, response){
-  response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-});
+// app.get('*', function (request, response){
+//   response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+// });
 
 // Handle 404
 app.use(function (request, response, next) {
