@@ -4,6 +4,7 @@ var PrayFor = require('./components/PrayFor.jsx');
 var Prayers = require('./components/Prayers.jsx');
 var LoginPage = require('./containers/LoginPage.jsx');
 var SignupPage = require('./containers/SignupPage.jsx');
+var PrayerManager = require('./components/PrayerManager.jsx')
 import Auth from './api/Auth';
 
 
@@ -20,6 +21,11 @@ const routes = {
     {
       path: '/prayfor',
       component: PrayFor
+    },
+
+    {
+      path: '/manage',
+      component: PrayerManager
     },
 
     {

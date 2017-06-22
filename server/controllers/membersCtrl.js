@@ -34,3 +34,15 @@ exports.getOneMember = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 }
+
+exports.getPrayedFor = (req, res) => {
+  var memberid = req.params.memberid;
+
+  console.log(Member.Instance.prototype);
+
+  return Member
+    .findById(memberid)
+    .then((member) => {return member.getMemberItem()})
+    .then((whatever) => {res.status(200).send(whatever)})
+    .catch((err) => res.status(400).send(err));
+}

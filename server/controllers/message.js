@@ -15,8 +15,8 @@ exports.webhook = (request, response) => {
     })
     .then((member) => {
       if(!member) {
-        createMember(member, phone);
         respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say \"pray [prayer here]\" to submit a prayer. Say \"commands\" for commmands.");
+        return createMember(member, phone);
       } else {
         processMessage(member);
       }

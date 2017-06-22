@@ -1,5 +1,6 @@
 import React from 'react';
-import {Button, IconButton} from 'react-toolbox/lib/button';
+import { Card, CardText } from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
 import Auth from '../api/Auth.js';
 var prayerService = require('../api/prayerService');
 
@@ -39,16 +40,16 @@ const PrayerCard = React.createClass({
 
   render: function() {
     return(
-      <div className="card">
+      <Card className="card">
         <div className="prayer-info">
           <h2>{this.props.content}</h2>
           <h3>Submitted: {this.returnFormatedDate(this.props.date)}</h3>
         </div>
         <div>
           <p>Prayed for: {this.state.prayedForNumber} times</p>
-          <Button onClick={this.handleClick} label="Prayed For" raised />
+          <RaisedButton onTouchTap={this.handleClick} label="Prayed For" />
         </div>
-      </div>
+      </Card>
     );
   }
 });

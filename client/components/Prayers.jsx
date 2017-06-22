@@ -8,7 +8,8 @@ const Prayers = React.createClass({
   getInitialState: function(){
     return {
       prayers: [],
-      error: false
+      error: false,
+      noPrayers: false
     }
   },
 
@@ -16,12 +17,17 @@ const Prayers = React.createClass({
     var that = this;
 
     prayerService.getAllPrayers().then(function(data){
-      that.setState({
-        prayers: data
-      });
+      console.log(data);
+      if(data.length === 0){
+        that.setState({ noPrayers: true, prayers: []});
+      } else {
+        that.setState({
+          prayers: data
+        });
+      }
     }, function(err){
       that.setState({
-        prayers: undefined,
+        prayers: [],
         error: err
       });
     });
@@ -29,11 +35,17 @@ const Prayers = React.createClass({
 
   render: function(){
 
-    var {prayers, error} = this.state;
+    var {prayers, error, noPrayers} = this.state;
 
     function renderError() {
       if(error){
         return <h3>{error}</h3>
+      }
+    }
+
+    function renderMessage() {
+      if(noPrayers){
+        return <h3 className="allPrayedFor-message">No prayers available</h3>
       }
     }
 
@@ -46,6 +58,7 @@ const Prayers = React.createClass({
         </Row>
         <Row center="xs">
             {renderError()}
+            {renderMessage()}
             {
               prayers.map((item, idx) => (
                 <Col key={idx} xs={12} sm={6} md={4} lg={3} >

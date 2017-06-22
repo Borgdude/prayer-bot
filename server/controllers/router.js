@@ -30,5 +30,9 @@ module.exports = function(app) {
     app.get('/prayers/all', prayerCtrl.getAllPrayers)
     app.put('/prayers/all', prayerCtrl.updateAllPrayers);
     app.put('/prayers/:prayerid', prayerCtrl.updateOnePrayer);
-    app.put('/prayers/increment/:prayerid', authCheckMiddleware, prayerCtrl.incrementOnePrayer)
+    app.put('/prayers/increment/:prayerid', authCheckMiddleware, prayerCtrl.incrementOnePrayer);
+    app.post('/prayers/delete', prayerCtrl.deletePrayers);
+    app.post('/prayedfor/:prayerid', prayerCtrl.memberPrayedFor);
+
+    app.get('/prayedfor/:memberid', memberCtrl.getPrayedFor)
 };

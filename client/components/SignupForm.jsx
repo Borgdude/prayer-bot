@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import Input from 'react-toolbox/lib/input';
-import {Button, IconButton} from 'react-toolbox/lib/button';
+import { Card, CardText } from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
 
 const SignupForm = ({
@@ -12,35 +13,42 @@ const SignupForm = ({
   user
 }) => (
     <Row center="xs">
-        <Col xs={12} sm={6} md={4} lg={3}>
-            <h2 className="card-heading">Sign Up</h2>
-            <div className="card">
-                <form action="/" onSubmit={onSubmit}>
+      <Col xs={12} sm={6} md={4} lg={3}>
+        <Card>
+          <h2 className="card-heading">Sign Up</h2>
+          <div className="card">
+              <form action="/" onSubmit={onSubmit}>
 
-                {err.summary && <p className="error-message">{err.summary}</p>}
+              {err.summary && <p className="error-message">{err.summary}</p>}
+              <div className="field-line">
+                  <TextField
+                  floatingLabelText="Username"
+                  name="username"
+                  onChange={onChange}
+                  value={user.username}
+                  />
+              </div>
 
-                    <Input
-                    label="Username"
-                    name="username"
-                    onChange={onChange.bind(this, 'username')}
-                    value={user.username}
-                    />
+              <div className="field-line">
+                  <TextField
+                  floatingLabelText="Password"
+                  type="password"
+                  name="password"
+                  onChange={onChange}
+                  value={user.password}
+                  />
+              </div>
 
-                    <Input
-                    label="Password"
-                    type="password"
-                    name="password"
-                    onChange={onChange.bind(this, 'password')}
-                    value={user.password}
-                    />
+              <div className="button-line">
+                <RaisedButton type="submit" label="Create New Account" primary />
+              </div>
 
-                    <Button type="submit" label="Sign Up" raised primary/>
+                  <p>Already have an account? <Link to={'/login'}>Log in</Link></p>
 
-                    <p>Already have an account? <Link to={'/login'}>Log in</Link></p>
-
-                </form>
-            </div>
-        </Col>
+              </form>
+          </div>
+        </Card>
+      </Col>
     </Row>
 );
 

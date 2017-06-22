@@ -1,9 +1,3 @@
-var reactToolboxVariables = {
-  'color-text': '#444548',
-  /* Note that you can use global colors and variables */
-  'color-primary': 'var(--palette-blue-300)',
-  'color-primary-dark': 'var(--palette-blue-500)'
-};
 
 
 module.exports = {
@@ -21,9 +15,9 @@ module.exports = {
   module: {
     loaders: [
       {
-        loader: 'babel-loader',
+        loader: 'babel',
         query: {
-          presets: ['react', 'es2015', 'stage-0']
+          presets: ['es2015', 'react', 'stage-0']
         },
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/
@@ -46,13 +40,7 @@ module.exports = {
   postcss: () => {
     return [
       /* eslint-disable global-require */
-      require('postcss-cssnext')({
-        features: {
-          customProperties: {
-            variables: reactToolboxVariables,
-          },
-        },
-      }),
+      require('postcss-cssnext'),
       /* optional - see next section */
       require('postcss-modules-values'),
       /* eslint-enable global-require */

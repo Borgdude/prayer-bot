@@ -39,5 +39,15 @@ module.exports = {
       console.log(err);
       throw new Error("Prayer did not update succesffuly");
     });
+  },
+  deletePrayers: function(prayerids){
+    var params = new URLSearchParams();
+    params.append('prayerids', prayerids);
+    return axios.post("/prayers/delete", params).then(function(res){
+      return res.data;
+    }, function(err){
+      console.log(err);
+      throw new Error("Prayer did not update succesffuly");
+    });
   }
 }

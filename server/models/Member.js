@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    password: {
+      type: DataTypes.STRING,
+      defaultValue: 'false'
     }
   }, {
     classMethods: {
@@ -15,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         Member.hasMany(models.PrayerItem, {
           foreignKey: 'memberId',
           as: 'prayerItems',
+        });
+        Member.belongsToMany(models.PrayerItem, {
+          through: 'PrayedFor',
+          as: 'MemberItem'
         });
       }
     },
@@ -41,5 +49,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
+  //sequelize.sync({force: true});
+
   return Member;
 };

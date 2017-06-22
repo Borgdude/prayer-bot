@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false
     },
     prayedForNumber: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       defaultValue: 0
     }
   }, {
@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         PrayerItem.belongsTo(models.Member, {
           foreignKey: 'memberId',
           onDelete: 'CASCADE'
+        });
+        PrayerItem.belongsToMany(models.Member, {
+          through: 'PrayedFor',
+          as: 'PrayedForItem'
         });
       },
       completePrayersAndSendMessage: () => {
@@ -32,5 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
+  //sequelize.sync({force: true});
   return PrayerItem;
 };

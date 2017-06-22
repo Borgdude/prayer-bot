@@ -1,5 +1,6 @@
 var Member = require('../models').Member;
 var PrayerItem = require('../models').PrayerItem;
+var Users = require('../models').Users;
 
 var findMemberAndSendMessage = (values) => {
     return Member
@@ -64,5 +65,31 @@ exports.incrementOnePrayer = (req, res) => {
     .findById(req.params.prayerid)
     .then((prayer) => prayer.increment('prayedForNumber'))
     .then((whatever) => res.status(200).send(whatever))
-    .catch((err) => res.status(400).send(err))
+    .catch((err) => res.status(400).send(err));
+}
+
+exports.deletePrayers = (req, res) => {
+  console.log(req.body.prayerids);
+  var prayerids = JSON.parse(req.body.prayerids);
+  return PrayerItem
+    .destroy( {where: { id: prayerids }})
+    .then(() => PrayerItem.findAll())
+    .then((prayers) => res.status(200).send(prayers))
+    .catch((err) => res.status(400, err));
+}
+
+exports.memberPrayedFor = (req, res) => {
+  var prayerid = req.params.prayerid;
+  var memberid = req.body.memberid;
+
+  console.log(prayerid);
+  console.log(memberid);
+
+  return PrayerItem
+    .findById(prayerid)
+    .then((prayer) => {
+      return prayer.addPrayedForItem(memberid)
+    })
+    .then((whatever) => res.status(200).send(whatever))
+    .catch((err) => res.status(400).send(err));
 }
