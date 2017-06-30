@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-flexbox-grid';
-import PrayerCard from './PrayerCard.jsx'
+import PrayerCard from './PrayerCard.jsx';
+import LoginDialog from './Dialog';
 
 var prayerService = require('../api/prayerService');
 
@@ -9,27 +10,52 @@ const Prayers = React.createClass({
     return {
       prayers: [],
       error: false,
-      noPrayers: false
+      noPrayers: false,
+      open: false,
+      offset: 0,
+      perPage: 20,
+      number: 1
     }
   },
 
-  componentDidMount: function(){
+  loadPrayers: function(){
     var that = this;
 
-    prayerService.getAllPrayers().then(function(data){
+    prayerService.getAllPrayers(that.state.perPage, this.state.offset).then(function(data){
       console.log(data);
-      if(data.length === 0){
+      if(data.count === 0){
         that.setState({ noPrayers: true, prayers: []});
       } else {
-        that.setState({
-          prayers: data
-        });
+        that.setState({prayers: data.rows, pageCount: Math.ceil(data.count / that.state.perPage)});
       }
     }, function(err){
-      that.setState({
-        prayers: [],
-        error: err
-      });
+      that.setState({prayers: [], error: err});
+    });
+  },
+
+  buildPrayers: function(){
+    var prayers = []
+  },
+
+  componentDidMount: function(){
+    this.loadPrayers();
+  },
+
+  handleClose: function(){
+    console.log("CLOSE IT!");
+    this.setState({ open: false });
+  },
+
+  handleOpen: function(){
+    if(!localStorage.getItem('never_see')){
+      this.setState({ open: true });
+    }
+  },
+
+  handlePageClick: function(number){
+    let offset = Math.ceil((number - 1) * this.state.perPage);
+    this.setState({offset: offset, number: number}, () => {
+      this.loadPrayers();
     });
   },
 
@@ -56,17 +82,18 @@ const Prayers = React.createClass({
             <h1 className="header">Prayer Requests</h1>
           </Col>
         </Row>
-        <Row center="xs">
+        <Row>
             {renderError()}
             {renderMessage()}
             {
               prayers.map((item, idx) => (
                 <Col key={idx} xs={12} sm={6} md={4} lg={3} >
-                  <PrayerCard prayerID={item.id} content={item.content} date={item.createdAt} prayedForNumber={item.prayedForNumber}/>
+                  <PrayerCard prayerID={item.id} content={item.content} date={item.createdAt} prayedForNumber={item.prayedForNumber} updateContent={item.updateContent} onOpen={this.handleOpen} />
                 </Col>
               ))
             }
         </Row>
+        <LoginDialog open={this.state.open} onClose={this.handleClose} />
       </div>
     )
   }

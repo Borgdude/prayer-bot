@@ -54,8 +54,10 @@ exports.updateOnePrayer = (req, res) => {
 }
 
 exports.getAllPrayers = (req, res) => {
+  console.log("LIMIT", req.query.limit);
+  console.log("OFFSET", req.query.offset);
   return PrayerItem
-    .findAll()
+    .findAndCountAll({ limit: req.query.limit, offset: req.query.offset })
     .then(prayers => res.status(200).send(prayers))
     .catch(error => res.status(400).send(error));
 }
@@ -70,7 +72,7 @@ exports.incrementOnePrayer = (req, res) => {
 
 exports.deletePrayers = (req, res) => {
   console.log(req.body.prayerids);
-  var prayerids = JSON.parse(req.body.prayerids);
+  var prayerids = req.body.prayerids.split(",");
   return PrayerItem
     .destroy( {where: { id: prayerids }})
     .then(() => PrayerItem.findAll())
@@ -80,15 +82,16 @@ exports.deletePrayers = (req, res) => {
 
 exports.memberPrayedFor = (req, res) => {
   var prayerid = req.params.prayerid;
-  var memberid = req.body.memberid;
-
-  console.log(prayerid);
-  console.log(memberid);
+  var memberid = req.authid;
 
   return PrayerItem
     .findById(prayerid)
     .then((prayer) => {
-      return prayer.addPrayedForItem(memberid)
+      if(!prayer){
+        return res.status(404).send({message: "Prayer not found"});
+      } else {
+        return prayer.addPrayedForItem(memberid)
+      }
     })
     .then((whatever) => res.status(200).send(whatever))
     .catch((err) => res.status(400).send(err));

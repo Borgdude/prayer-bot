@@ -24,15 +24,16 @@ module.exports = function(app) {
     app.post('/message/send', message.sendMessages);
 
     app.get('/members', memberCtrl.getAllMembers);
-    app.get('/members/:memberid', memberCtrl.getOneMember);
+    app.get('/members/one',authCheckMiddleware, memberCtrl.getOneMember);
 
     app.get('/prayers/oneUnprayed', prayerCtrl.getOneUnprayedFor);
     app.get('/prayers/all', prayerCtrl.getAllPrayers)
     app.put('/prayers/all', prayerCtrl.updateAllPrayers);
     app.put('/prayers/:prayerid', prayerCtrl.updateOnePrayer);
-    app.put('/prayers/increment/:prayerid', authCheckMiddleware, prayerCtrl.incrementOnePrayer);
+    app.put('/prayers/increment/:prayerid', prayerCtrl.incrementOnePrayer);
     app.post('/prayers/delete', prayerCtrl.deletePrayers);
-    app.post('/prayedfor/:prayerid', prayerCtrl.memberPrayedFor);
+    app.post('/prayedfor/:prayerid', authCheckMiddleware, prayerCtrl.memberPrayedFor);
 
-    app.get('/prayedfor/:memberid', memberCtrl.getPrayedFor)
+    app.get('/api/prayedfor', memberCtrl.getPrayedFor);
+
 };

@@ -12,23 +12,13 @@ module.exports = {
     },
     extensions: ['', '.js', '.jsx']
   },
+  devtool: "cheap-eval-source-map",
   module: {
     loaders: [
       {
-        loader: 'babel',
-        query: {
-          presets: ['es2015', 'react', 'stage-0']
-        },
+        loader: 'babel-loader',
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/
-      },
-      {
-        test: /\.css$/,
-        loaders: [
-          'style-loader',
-          'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss?sourceMap&sourceComments',
-        ],
-        exclude: /flexboxgrid/
       },
       {
         test: /\.css$/,
@@ -36,14 +26,5 @@ module.exports = {
         include: /flexboxgrid/
       }
     ]
-  },
-  postcss: () => {
-    return [
-      /* eslint-disable global-require */
-      require('postcss-cssnext'),
-      /* optional - see next section */
-      require('postcss-modules-values'),
-      /* eslint-enable global-require */
-    ];
   }
 };

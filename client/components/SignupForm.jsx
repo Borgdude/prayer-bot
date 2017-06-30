@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Card, CardText } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
+import Card from 'material-ui/Card';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid';
+var NumberFormat = require('react-number-format');
 
 const SignupForm = ({
   onSubmit,
   onChange,
-  err,
+  error,
   successMessage,
   user
 }) => (
@@ -19,28 +20,21 @@ const SignupForm = ({
           <div className="card">
               <form action="/" onSubmit={onSubmit}>
 
-              {err.summary && <p className="error-message">{err.summary}</p>}
+              {error && <p className="error-message">{error}</p>}
               <div className="field-line">
-                  <TextField
-                  floatingLabelText="Username"
-                  name="username"
-                  onChange={onChange}
-                  value={user.username}
-                  />
-              </div>
-
-              <div className="field-line">
-                  <TextField
-                  floatingLabelText="Password"
-                  type="password"
-                  name="password"
-                  onChange={onChange}
-                  value={user.password}
-                  />
+                  <NumberFormat
+                    label="Phone Number"
+                    name="phoneNumber"
+                    onChange={onChange}
+                    value={user.phoneNumber}
+                    format="### ### ####"
+                    mask="_"
+                    prefix={'+1'}
+                    customInput={TextField}/>
               </div>
 
               <div className="button-line">
-                <RaisedButton type="submit" label="Create New Account" primary />
+                <Button type="submit">Create New Account</Button>
               </div>
 
                   <p>Already have an account? <Link to={'/login'}>Log in</Link></p>

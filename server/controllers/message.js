@@ -4,6 +4,10 @@ var googleSheets = require('./googleSheets');
 var groupMe = require('./groupmeBot');
 var swearjar = require('swearjar');
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 // Create a function to handle Twilio SMS / MMS webhook requests
 exports.webhook = (request, response) => {
 
@@ -55,6 +59,12 @@ exports.webhook = (request, response) => {
           case "urgent":
             processUrgentPrayer(member, filterPrayer(msg));
             break;
+          case "list":
+            listPrayerItems();
+            break;
+          case "update":
+            updatePrayer(msg);
+            break;
           default:
             respond("Command not found. Type 'commands' for avaiable commands");
         }
@@ -105,13 +115,73 @@ exports.webhook = (request, response) => {
       });
     }
 
+    function listPrayerItems(){
+      Member.find({where: {phoneNumber: phone}})
+        .then((member) => member.getPrayerItems({limit: 5, order: [['updatedAt', 'DESC']]}))
+        .then((prayers) => processPrayersAndSend(prayers))
+        .catch((err) => console.log(err));
+    }
+
+    function processPrayersAndSend(prayers){
+      return new Promise((resolve, reject) => {
+        var result = '';
+        for(var prayer in prayers){
+          result += "ID: " + prayers[prayer].dataValues.id + ". \"" + prayers[prayer].dataValues.content + ".\" Prayed for: " + prayers[prayer].dataValues.prayedForNumber + " times.\n\n";
+        }
+
+        respond(result);
+      });
+    }
+
+    function updatePrayer(message){
+      var prayerId = parseInt(message.split(" ")[1]);
+      var update = message.split(" ");
+      var com = update.splice(0, 2);
+      update = update.join(" ");
+      update = update.capitalize();
+      //console.log(PrayerItem.Instance.prototype);
+
+      Member.find({where: {phoneNumber: phone}})
+        .then((member) => {
+          if(!member){
+            return "No Member!";
+          } else {
+            console.log(member.id);
+            return PrayerItem.findOne({where: {id: prayerId, memberId: member.id}});
+          }
+        })
+        .then((prayer) => {
+          if(!prayer){
+            return respond("No prayer found!");
+          } else {
+            return prayer.updateAttributes({ updateContent: update });
+          }
+        })
+        .then(async (prayer) => {
+          respond("Prayer: \"" + prayer.content +"\" now has an update of: \"" + update + "\".");
+          var pass = {};
+          pass.members = await prayer.getPrayedForItem();
+          pass.prayer = prayer.content;
+          return pass;
+        })
+        .then((pass) => {
+          // console.log(pass);
+          var members = pass.members;
+          var prayer = pass.prayer;
+          for(m in members){
+            members[m].sendUpdateMessage("A prayer you prayed for: \"" + prayer + "\" now has update: \"" + update + "\"");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+
     // Filter prayers for naughty words, you never know man
     function filterPrayer(message){
       var prayer = message.split(' ');
       var com = prayer.shift();
       prayer = prayer.join(' ');
       prayer = swearjar.censor(prayer);
-      return prayer;
+      return prayer.capitalize();
     }
 
     // Set Content-Type response header and render XML (TwiML) response in a
@@ -127,8 +197,7 @@ exports.webhook = (request, response) => {
 // Handle form submission
 exports.sendMessages = function(request, response) {
     // Get message info from form submission
-    var message = request.body.message;
-    var imageUrl = request.body.imageUrl;
+    var message = request.body.message; var imageUrl = request.body.imageUrl;
 
     // Use model function to send messages to all subscribers
     Subscriber.sendMessage(message, imageUrl, function(err) {

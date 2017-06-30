@@ -12,7 +12,7 @@ class SignUpPage extends React.Component {
 
     // set the initial component state
     this.state = {
-      errors: {},
+      error: '',
       user: {
         username: '',
         password: ''
@@ -46,11 +46,11 @@ class SignUpPage extends React.Component {
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
-
+    var phoneNumber = "+1" + this.state.user.phoneNumber.replace(/\s/g, '');
+    // console.log(phoneNumber);
     // create a string for an HTTP body message
-    const username = encodeURIComponent(this.state.user.username);
-    const password = encodeURIComponent(this.state.user.password);
-    const formData = `username=${username}&password=${password}`;
+    const ecdPhoneNumber = encodeURIComponent(phoneNumber);
+    const formData = `user=${ecdPhoneNumber}`;
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
@@ -60,25 +60,24 @@ class SignUpPage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         // success
-
+        var uid = xhr.response.uid;
         // change the component-container state
         this.setState({
-          errors: {}
+          error: ''
         });
 
         // set a message
         localStorage.setItem('successMessage', xhr.response.message);
 
         // make a redirect
-        this.context.router.replace('/login');
+        this.context.router.replace('/verify/' + uid);
       } else {
         // failure
 
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
+        console.log(xhr);
 
         this.setState({
-          errors
+          error: "Something went wrong or this phone number already has an account."
         });
       }
     });
@@ -93,7 +92,7 @@ class SignUpPage extends React.Component {
       <SignUpForm
         onSubmit={this.processForm}
         onChange={this.changeUser}
-        err={this.state.errors}
+        error={this.state.error}
         user={this.state.user}
       />
     );

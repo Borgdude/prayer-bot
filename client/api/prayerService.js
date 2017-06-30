@@ -24,8 +24,13 @@ module.exports = {
       throw new Error("Prayer did not update succesffuly");
     });
   },
-  getAllPrayers: function(){
-    return axios.get('prayers/all').then(function(res){
+  getAllPrayers: function(limit, offset){
+    return axios.get('prayers/all', {
+      params:{
+        offset: offset,
+        limit: limit
+      }
+    }).then(function(res){
       return res.data;
     }, function(err){
       console.log(err);
@@ -37,7 +42,15 @@ module.exports = {
       return res.data;
     }, function(err){
       console.log(err);
-      throw new Error("Prayer did not update succesffuly");
+      throw new Error("Prayer did not update succesfffuly");
+    });
+  },
+  addPrayedFor: function(prayerid){
+    return axios.post("/prayedfor/" + prayerid).then(function(res){
+      return res.data;
+    },function(err){
+      console.log(err);
+      throw new Error("Prayer did not update successffuly");
     });
   },
   deletePrayers: function(prayerids){

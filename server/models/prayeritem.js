@@ -5,12 +5,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     complete: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,
       defaultValue: false
     },
     prayedForNumber: {
       type: DataTypes.INTEGER,
       defaultValue: 0
+    },
+    updateContent: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     classMethods: {

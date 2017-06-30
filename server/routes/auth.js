@@ -1,6 +1,10 @@
 const express = require('express');
 const validator = require('validator');
 const passport = require('passport');
+var Member = require('../models').Member;
+const jwt = require('jsonwebtoken');
+
+var passwordless = require('passwordless');
 
 const router = new express.Router();
 
@@ -16,15 +20,9 @@ function validateSignupForm(payload) {
   let isFormValid = true;
   let message = '';
 
-
-  if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
+  if (!payload || typeof payload.password !== 'string' || payload.password.trim().length === 0) {
     isFormValid = false;
-    errors.password = 'Password must have at least 8 characters.';
-  }
-
-  if (!payload || typeof payload.username !== 'string' || payload.username.trim().length === 0) {
-    isFormValid = false;
-    errors.name = 'Please provide your username.';
+    errors.password = 'Please provide your password';
   }
 
   if (!isFormValid) {
@@ -50,9 +48,9 @@ function validateLoginForm(payload) {
   let isFormValid = true;
   let message = '';
 
-  if (!payload || typeof payload.username !== 'string' || payload.username.trim().length === 0) {
+  if (!payload || typeof payload.phonenumber !== 'string' || payload.phonenumber.trim().length < 12) {
     isFormValid = false;
-    errors.username = 'Please provide your username.';
+    errors.username = 'Please provide your phone number.';
   }
 
   if (!payload || typeof payload.password !== 'string' || payload.password.trim().length === 0) {
@@ -71,7 +69,44 @@ function validateLoginForm(payload) {
   };
 }
 
-router.post('/signup', (req, res, next) => {
+router.post('/login', (req, res, next) => {
+  const validationResult = validateLoginForm(req.body);
+  if (!validationResult.success) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.message,
+      errors: validationResult.errors
+    });
+  }
+
+  return passport.authenticate('local-login', (err, token, userData) => {
+    if (err) {
+      if (err.name === 'IncorrectCredentialsError') {
+        return res.status(400).json({
+          success: false,
+          message: err.message
+        });
+      }
+
+      console.log(err);
+
+      return res.status(400).json({
+        success: false,
+        message: 'Could not process the form.'
+      });
+    }
+
+
+    return res.json({
+      success: true,
+      message: 'You have successfully logged in!',
+      token,
+      user: userData
+    });
+  })(req, res, next);
+});
+
+router.post('/truesignup', (req, res, next) => {
   const validationResult = validateSignupForm(req.body);
   if (!validationResult.success) {
     return res.status(400).json({
@@ -81,10 +116,8 @@ router.post('/signup', (req, res, next) => {
     });
   }
 
-
   return passport.authenticate('local-signup', (err) => {
     if (err) {
-        console.log(err);
       if (err.name === 'MongoError' && err.code === 11000) {
         // the 11000 Mongo code is for a duplication email error
         // the 409 HTTP status code is for conflict error
@@ -101,50 +134,37 @@ router.post('/signup', (req, res, next) => {
         success: false,
         message: 'Could not process the form.'
       });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'You have successfully signed up! Now you should be able to log in.'
-    });
-  })(req, res, next);
-});
-
-router.post('/login', (req, res, next) => {
-  const validationResult = validateLoginForm(req.body);
-  if (!validationResult.success) {
-    return res.status(400).json({
-      success: false,
-      message: validationResult.message,
-      errors: validationResult.errors
-    });
-  }
-
-
-  return passport.authenticate('local-login', (err, token, userData) => {
-    if (err) {
-        console.log(err);
-      if (err.name === 'IncorrectCredentialsError') {
-        return res.status(400).json({
-          success: false,
-          message: err.message
-        });
-      }
-
-      return res.status(400).json({
-        success: false,
-        message: 'Could not process the form.'
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: 'You have successfully signed up! Now you should be able to log in.'
       });
     }
 
-
-    return res.json({
-      success: true,
-      message: 'You have successfully logged in!',
-      token,
-      user: userData
-    });
   })(req, res, next);
+});
+
+router.post('/signup', passwordless.requestToken(function(user, delivery, callback, req){
+  console.log(user);
+  Member.findOne( {where: {phoneNumber: user}})
+    .then((user) => {
+      if(user.password !== 'false'){
+        callback(null, null);
+      } else if(user){
+        console.log(user);
+        callback(null, user.id); 
+      } else {
+        console.log("No user found");
+        callback(null, null);
+      }
+    })
+    .catch(err => {console.log(err); callback(null, null)});
+}), function(req, res){
+  res.status(200).send({uid: req.passwordless.uidToAuth});
+});
+
+router.post('/verify', passwordless.acceptToken({ allowPost: true, successRedirect: '/signupfinal' }), (req, res) => {
+  res.status(200).send({message: "success"});
 });
 
 module.exports = router;

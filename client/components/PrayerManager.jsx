@@ -1,7 +1,16 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell} from 'react-toolbox/lib/table';
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+} from 'material-ui/Table';
 import { Row, Col } from 'react-flexbox-grid';
-import {Button, IconButton} from 'react-toolbox/lib/button';
+import Button from 'material-ui/Button';
+import Checkbox from 'material-ui/Checkbox';
+import Paper from 'material-ui/Paper';
+import Typography from 'material-ui/Typography';
 
 var prayerService = require('../api/prayerService');
 
@@ -18,7 +27,7 @@ const PrayerManager = React.createClass({
     var that = this;
     prayerService.getAllPrayers().then(function(data){
       that.setState({
-        source: data
+        source: data.rows
       });
       console.log(data);
     }, function(e){
@@ -29,7 +38,7 @@ const PrayerManager = React.createClass({
   handleDeleteClick: function(){
     var that = this;
     var prayerids = this.state.selected;
-    //alert(prayerids.toString());
+    // console.log(prayerids);
     prayerService.deletePrayers(prayerids).then(function(data){
       that.setState({
         source: data,
@@ -52,12 +61,33 @@ const PrayerManager = React.createClass({
     return d.toDateString();
   },
 
-  handleRowSelect: function(selecteroni){
-    var data = this.state.source;
+  handleSelectAllClick: function(event, checked){
+    if (checked) {
+      this.setState({ selected: this.state.source.map(n => n.id) });
+      return;
+    }
+    this.setState({ selected: [] });
+  },
 
-    this.setState({
-      selected: selecteroni.map(item => data[item].id)
-    });
+  handleClick: function(event, id){
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    this.setState({ selected: newSelected });
   },
 
   render: function() {
@@ -80,29 +110,42 @@ const PrayerManager = React.createClass({
         </Row>
         <Row className="edit-row" center="xs">
           <Col xs={12} sm={10} md={8} lg={8}>
-            <Button className="delete-button" onClick={this.handleDeleteClick} label="Delete Selected" raised disabled={selected.length > 0 ? false : true}/>  
+            <Button raised className="delete-button" onClick={this.handleDeleteClick} disabled={selected.length > 0 ? false : true}>Delete Selected</Button>  
           </Col>    
         </Row>
         <Row center="xs">
-          <Col xs={10} sm={10} md={8} lg={8}>
-              <Table multiSelectable onRowSelect={this.handleRowSelect}>
-                <TableHead >
-                  <TableCell>id</TableCell>
-                  <TableCell>Prayer</TableCell>
-                  <TableCell>Number of times prayed for</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Prayed For</TableCell>
-                </TableHead>
-              {source.map((prayerItem, idx) => (
-                  <TableRow key={idx} selected={selected.indexOf(prayerItem.id) !== -1}>
-                    <TableCell>{prayerItem.id}</TableCell>
-                    <TableCell>{prayerItem.content}</TableCell>
-                    <TableCell>{prayerItem.prayedForNumber}</TableCell>
-                    <TableCell>{this.returnFormatedDate(prayerItem.createdAt)}</TableCell>
-                    <TableCell>{prayerItem.complete.toString()}</TableCell>
+          <Col xs={12} md={10} lg={8}>
+            <Paper style={{overflowX: 'auto', width: '100%'}}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell checkbox>
+                      <Checkbox onChange={this.handleSelectAllClick} />
+                    </TableCell>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Prayer</TableCell>
+                    <TableCell>Times prayed for</TableCell>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Prayed For</TableCell>
                   </TableRow>
-              ))}
+                </TableHead>
+                <TableBody >   
+                {source.map((prayerItem, idx) => (
+                  <TableRow hover key={idx} selected={selected.indexOf(prayerItem.id) !== -1}
+                    onClick={event => this.handleClick(event, prayerItem.id)}>
+                      <TableCell checkbox>
+                        <Checkbox checked={selected.indexOf(prayerItem.id) !== -1} />
+                      </TableCell>
+                      <TableCell>{prayerItem.id}</TableCell>
+                      <TableCell>{prayerItem.content}</TableCell>
+                      <TableCell>{prayerItem.prayedForNumber}</TableCell>
+                      <TableCell>{this.returnFormatedDate(prayerItem.createdAt)}</TableCell>
+                      <TableCell>{prayerItem.complete.toString()}</TableCell>
+                  </TableRow>
+                ))}
+                </TableBody>
               </Table>
+            </Paper>
           </Col>
         </Row>
       </div>

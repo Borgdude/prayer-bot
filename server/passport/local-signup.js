@@ -1,4 +1,4 @@
-const Users = require('../models').Users;
+const Member = require('../models').Member;
 const PassportLocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 
@@ -6,13 +6,13 @@ var bcrypt = require('bcrypt');
  * Return the Passport Local Strategy object.
  */
 module.exports = new PassportLocalStrategy({
-  usernameField: 'username',
+  usernameField: 'memberid',
   passwordField: 'password',
   session: false,
   passReqToCallback: true
-}, (req, username, password, done) => {
+}, (req, memberid, password, done) => {
   const userData = {
-    username: username.trim(),
+    memberid: memberid.trim(),
   };
   bcrypt.hash(password.trim(), 10, function(err, hash) {
 
@@ -20,11 +20,20 @@ module.exports = new PassportLocalStrategy({
     
     console.log(hash);
     userData.password = hash;
-    Users.create(userData)
-      .then(() => done(null))
-      .catch((err) => done(err));
+    Member.findById(userData.memberid)
+      .then((member) => {
+        console.log(member);
+        if(member.password === 'false'){
+          member.password = userData.password;
+          return member.save();
+        } else {
+          return done("BRO");
+        }
+      })
+      .then((whathever) => {return done(null)})
+      .catch((err) => {
+        return done(err);
+      });
 
   });
-  
-  console.log(userData.passworded);
 });

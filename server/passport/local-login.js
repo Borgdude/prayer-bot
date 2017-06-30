@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Users = require('../models').Users;
+const Member = require('../models').Member;
 const PassportLocalStrategy = require('passport-local').Strategy;
 
 
@@ -7,29 +7,30 @@ const PassportLocalStrategy = require('passport-local').Strategy;
  * Return the Passport Local Strategy object.
  */
 module.exports = new PassportLocalStrategy({
-  usernameField: 'username',
+  usernameField: 'phonenumber',
   passwordField: 'password',
   session: false,
   passReqToCallback: true
-}, (req, username, password, done) => {
+}, (req, phonenumber, password, done) => {
   const userData = {
-    username: username.trim(),
+    phonenumber: phonenumber.trim(),
     password: password.trim()
   };
 
   console.log(password);
 
-  return Users.findOne({where: {username: userData.username}})
-             .then((user) => {
-                 if(!user) {
-                     const error = new Error('Incorrect email or password');
+  return Member.findOne({where: {phoneNumber: userData.phonenumber}})
+             .then((member) => {
+                 if(!member) {
+                    const error = new Error('Incorrect email or password');
                     error.name = 'IncorrectCredentialsError';
-
+                    console.log(error);
                     return done(error);
+                } else {
+                    //console.log(user);
+                    return member.comparePasswordsAndGenToken(userData.password);;
                 }
-                return user;
              })
-             .then((user) => user.comparePasswordsAndGenToken(userData.password))
              .then((token, data) => {
                  return done(null, token, data);
              })

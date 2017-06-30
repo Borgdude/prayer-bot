@@ -23,7 +23,7 @@ class LoginPage extends React.Component {
       errors: {},
       successMessage,
       user: {
-        username: '',
+        phoneNumber: '',
         password: ''
       }
     };
@@ -40,11 +40,12 @@ class LoginPage extends React.Component {
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
-
+    var phoneNumber = "+1" + this.state.user.phoneNumber.replace(/\s/g, '');
+    // console.log(phoneNumber);
     // create a string for an HTTP body message
-    const username = encodeURIComponent(this.state.user.username);
+    const ecdPhoneNumber = encodeURIComponent(phoneNumber);
     const password = encodeURIComponent(this.state.user.password);
-    const formData = `username=${username}&password=${password}`;
+    const formData = `phonenumber=${ecdPhoneNumber}&password=${password}`;
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
@@ -65,7 +66,8 @@ class LoginPage extends React.Component {
 
 
         // change the current URL to /
-        window.location.replace("/");
+        window.location.reload();
+        this.context.router.replace('/');
       } else {
         // failure
 

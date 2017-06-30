@@ -17,7 +17,7 @@ exports.getAllMembers = (req, res) => {
 //GET /members/:memberid
 exports.getOneMember = (req, res) => {
   return Member
-    .findById(req.params.memberid, {
+    .findById(req.authid, {
       include: [{
         model: PrayerItem,
         as: "prayerItems"
@@ -36,9 +36,7 @@ exports.getOneMember = (req, res) => {
 }
 
 exports.getPrayedFor = (req, res) => {
-  var memberid = req.params.memberid;
-
-  console.log(Member.Instance.prototype);
+  var memberid = req.authid;
 
   return Member
     .findById(memberid)

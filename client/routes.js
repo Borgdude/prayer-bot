@@ -1,10 +1,10 @@
 var Main = require('./components/Main.jsx');
-var Members = require('./components/Members.jsx');
 var PrayFor = require('./components/PrayFor.jsx');
 var Prayers = require('./components/Prayers.jsx');
 var LoginPage = require('./containers/LoginPage.jsx');
 var SignupPage = require('./containers/SignupPage.jsx');
 var PrayerManager = require('./components/PrayerManager.jsx')
+var TokenForm = require('./components/TokenForm.jsx')
 import Auth from './api/Auth';
 
 
@@ -46,6 +46,10 @@ const routes = {
         // change the current URL to /
         replace('/');
       }
+    },
+    {
+      path: '/verify',
+      component: TokenForm
     }
 
   ]
