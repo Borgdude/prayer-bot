@@ -60,7 +60,7 @@ exports.webhook = (request, response) => {
             processUrgentPrayer(member, filterPrayer(msg));
             break;
           case "list":
-            listPrayerItems();
+            listPrayerItems(msg);
             break;
           case "update":
             updatePrayer(msg);
@@ -115,19 +115,29 @@ exports.webhook = (request, response) => {
       });
     }
 
-    function listPrayerItems(){
+    function listPrayerItems(msg){
+      var page = msg.split(' ')[1] || 1;
+      console.log(page);
+      
+      var offset = (page - 1) * 5;
+
       Member.find({where: {phoneNumber: phone}})
-        .then((member) => member.getPrayerItems({limit: 5, order: [['createdAt', 'DESC']]}))
-        .then((prayers) => processPrayersAndSend(prayers))
+        .then((member) => {
+          return PrayerItem.findAndCountAll({where: {memberId: member.id}, limit: 5, order: [['createdAt', 'DESC']], offset: offset })
+        })
+        .then((prayers) => processPrayersAndSend(prayers, page))
         .catch((err) => console.log(err));
     }
 
-    function processPrayersAndSend(prayers){
+    function processPrayersAndSend(thingy, page){
       return new Promise((resolve, reject) => {
         var result = '';
+        var prayers = thingy.rows;
         for(var prayer in prayers){
           result += "ID: " + prayers[prayer].dataValues.id + ". \"" + prayers[prayer].dataValues.content + ".\" Prayed for: " + prayers[prayer].dataValues.prayedForNumber + " times.\n\n";
         }
+
+        result += "\nPage " + page + " of " + Math.ceil(thingy.count / 5) + ".";
 
         respond(result);
       });
@@ -147,20 +157,20 @@ exports.webhook = (request, response) => {
             return "No Member!";
           } else {
             console.log(member.id);
-            return PrayerItem.findOne({where: {id: prayerId, memberId: member.id}});
+            return PrayerItem.findOne({where: {id: prayerId, memberId: member.id}}); //Find PrayerItem first before updating.
           }
         })
         .then((prayer) => {
           if(!prayer){
             return respond("No prayer found!");
           } else {
-            return prayer.updateAttributes({ updateContent: update });
+            return prayer.updateAttributes({ updateContent: update });//Update prayer
           }
         })
         .then(async (prayer) => {
           respond("Prayer: \"" + prayer.content +"\" now has an update of: \"" + update + "\".");
           var pass = {};
-          pass.members = await prayer.getPrayedForItem();
+          pass.members = await prayer.getPrayedForItem(); // Get the members who prayed for that prayer.
           pass.prayer = prayer.content;
           return pass;
         })
@@ -169,7 +179,7 @@ exports.webhook = (request, response) => {
           var members = pass.members;
           var prayer = pass.prayer;
           for(m in members){
-            members[m].sendUpdateMessage("A prayer you prayed for: \"" + prayer + "\" now has update: \"" + update + "\"");
+            members[m].sendUpdateMessage("A prayer you prayed for: \"" + prayer + "\" now has update: \"" + update + "\""); // Send Message to members who prayed for that prayer.
           }
         })
         .catch((err) => console.log(err));
