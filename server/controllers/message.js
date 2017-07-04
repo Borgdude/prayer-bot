@@ -117,7 +117,7 @@ exports.webhook = (request, response) => {
 
     function listPrayerItems(){
       Member.find({where: {phoneNumber: phone}})
-        .then((member) => member.getPrayerItems({limit: 5, order: [['updatedAt', 'DESC']]}))
+        .then((member) => member.getPrayerItems({limit: 5, order: [['createdAt', 'DESC']]}))
         .then((prayers) => processPrayersAndSend(prayers))
         .catch((err) => console.log(err));
     }

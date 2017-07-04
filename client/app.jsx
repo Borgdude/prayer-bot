@@ -20,6 +20,18 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 const theme = createMuiTheme({
+  overrides: {
+    MuiCard: {
+      root: {
+        borderRadius: 4
+      }
+    },
+    MuiButton: {
+      raised: {
+        backgroundColor: 'white'
+      }
+    }
+  },
   palette: createPalette({
     primary: blueGrey, // Purple and green play nicely together.
     accent: red,
