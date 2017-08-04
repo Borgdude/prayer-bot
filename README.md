@@ -1,6 +1,10 @@
 # prayer-bot
 This is an SMS bot powered by Twilio that will allow users to submit a prayer that will be stored in a PostreSQL and Google Sheets. In the future, there will be a website that admins can log in to control the bot.
 
+## Features
+* Website for users to look and pray for prayer requests
+* Get notifications when a prayer a user has prayed for gets updated
+
 ## Installation
 Things you need:
 
@@ -19,8 +23,3 @@ Things you need:
 9. Run `node index.js` to start server
 10. See if it works, if not, check Twillo settings, enviroment variables, and console
 11. If it works, congragulations. You're done!
-
-# TODO
-- Add web interface
-  - Add login and admin
-- Go from there
