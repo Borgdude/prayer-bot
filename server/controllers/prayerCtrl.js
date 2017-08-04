@@ -57,7 +57,7 @@ exports.getAllPrayers = (req, res) => {
   console.log("LIMIT", req.query.limit);
   console.log("OFFSET", req.query.offset);
   return PrayerItem
-    .findAndCountAll({ limit: req.query.limit, offset: req.query.offset })
+    .findAndCountAll({ limit: req.query.limit, offset: req.query.offset, order: [['createdAt', 'DESC']], attributes: { exclude: ['memberId'] } })
     .then(prayers => res.status(200).send(prayers))
     .catch(error => res.status(400).send(error));
 }
