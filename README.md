@@ -3,7 +3,7 @@ This is an SMS bot powered by Twilio that will allow users to submit a prayer th
 
 ## Features
 * Website for users to look and pray for prayer requests
-* Get notifications when a prayer a user has prayed for gets updated
+* Get notifications when a prayer you have prayed for gets updated
 
 ## Installation
 Things you need:
