@@ -23,7 +23,8 @@ cfg.twilioNumber = process.env.TWILIO_NUMBER;
 cfg.mongoUrl = process.env.MONGOLAB_URI || process.env.MONGO_URL;
 
 //Google Sheets Information
-cfg.sheetsId = process.env.SHEETS_ID;
+cfg.publicSheetsId = process.env.PUBLIC_SHEETS_ID;
+cfg.privateSheetsId = process.env.PRIVATE_SHEETS_ID;
 
 //Google Auth File
 cfg.authFileName = process.env.GOOGLE_AUTH_FILE;

@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    public: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     prayedForNumber: {
       type: DataTypes.INTEGER,
       defaultValue: 0

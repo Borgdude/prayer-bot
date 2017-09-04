@@ -13,7 +13,7 @@ const NoMore = React.createClass({
   render: function(){
     return(
       <div style={{textAlign: 'center'}}>
-        <h1>No more prayers left</h1>
+        <h1 className="no-prayer" >No more prayers left</h1>
       </div>
     );
   }
@@ -88,7 +88,7 @@ const Prayers = React.createClass({
 
     function renderMessage() {
       if(noPrayers){
-        return <h3 className="allPrayedFor-message">No prayers available</h3>
+        return <h3 className="allPrayedFor-message no-prayer">No prayers available</h3>
       }
     }
 

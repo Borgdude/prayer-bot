@@ -57,9 +57,13 @@ exports.getAllPrayers = (req, res) => {
   console.log("LIMIT", req.query.limit);
   console.log("OFFSET", req.query.offset);
   return PrayerItem
-    .findAndCountAll({ limit: req.query.limit, offset: req.query.offset, order: [['createdAt', 'DESC']], attributes: { exclude: ['memberId'] } })
-    .then(prayers => res.status(200).send(prayers))
-    .catch(error => res.status(400).send(error));
+    .findAndCountAll({ where: { public: true }, limit: req.query.limit, offset: req.query.offset, order: [['createdAt', 'DESC']], attributes: { exclude: ['memberId'] } })
+    .then(prayers => {
+        return res.status(200).send(prayers);
+    })
+    .catch(error => {
+        return res.status(400).send(error);
+    });
 }
 
 exports.incrementOnePrayer = (req, res) => {

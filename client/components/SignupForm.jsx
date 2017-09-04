@@ -14,7 +14,7 @@ const SignupForm = ({
   user
 }) => (
     <Row center="xs">
-      <Col xs={12} sm={6} md={4} lg={3}>
+      <Col xs={12} sm={8} md={6} lg={4}>
         <Card>
           <h2 className="card-heading">Sign Up</h2>
           <div className="card">
@@ -34,7 +34,7 @@ const SignupForm = ({
               </div>
 
               <div className="button-line">
-                <Button type="submit">Create New Account</Button>
+                <Button raised type="submit">Create New Account</Button>
               </div>
 
                   <p>Already have an account? <Link to={'/login'}>Log in</Link></p>

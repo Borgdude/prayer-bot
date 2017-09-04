@@ -5,7 +5,9 @@ import routes from './routes.js';
 import Auth from './api/Auth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import createPalette from 'material-ui/styles/palette';
-import { blueGrey, amber, red } from 'material-ui/styles/colors';
+import purple from 'material-ui/colors/purple';
+import lightGreen from 'material-ui/colors/lightGreen';
+import red from 'material-ui/colors/red';
 var Main = require('./components/Main.jsx');
 var PrayFor = require('./components/PrayFor.jsx');
 var Prayers = require('./components/Prayers.jsx');
@@ -33,8 +35,11 @@ const theme = createMuiTheme({
     }
   },
   palette: createPalette({
-    primary: blueGrey, // Purple and green play nicely together.
-    accent: red,
+    primary: {
+      ...lightGreen,
+      500: "#33691E"
+    }, // Purple and green play nicely together.
+    accent: purple,
     error: red,
   }),
 });

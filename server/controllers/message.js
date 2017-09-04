@@ -48,7 +48,7 @@ exports.webhook = (request, response) => {
       case "commands":
         respond("Available commands:\n\
                 \"about\": Information about the bot.\n\
-                \"pray [prayer here]\": Use this to submit a prayer.\n\
+                \"pray [public/private] [prayer here]\": Use this to submit a prayer.\n\
                 \"ayy\": lmao\n\
                 \"urgent [prayer here]\": Submit a prayer that will be looked at immediately.\n\
                 \"list [number]\": View prayers you have submitted.\n\
@@ -58,7 +58,7 @@ exports.webhook = (request, response) => {
         respond("This bot was created by Jake Gutierrez.");
         break;
       case "pray":
-        processPrayer(member, filterPrayer(msg));
+        processPrayer(member, filterPrayer(msg), true);
         break;
       case "ayy":
         respond("lmao");
@@ -77,14 +77,25 @@ exports.webhook = (request, response) => {
     }
   }
 
-  function processPrayer(member, message) {
+  function processPrayer(member, message, public) {
     var prayer = message;
+    var public = true;
+
+    var arg = message.split(' ')[0];
+
+    if (arg.toLowerCase() === "public"){
+      public = true;
+      prayer = prayer.replace(arg + " ", '');
+    } else if (arg.toLowerCase() === "private"){
+      public = false;
+      prayer = prayer.replace(arg + " ", '');
+    }
 
     Member.findOne({
       where: { phoneNumber: phone }
     })
-      .then((member) => createPrayerItem(member, message))
-      .then((member) => addPrayerToSheets(member, prayer))
+      .then((member) => createPrayerItem(member, message, public))
+      .then((member) => addPrayerToSheets(member, prayer.capitalize(), public))
       .then((message) => respond(message))
       .catch((error) => {
         console.log(error);
@@ -92,20 +103,29 @@ exports.webhook = (request, response) => {
       });
   }
 
-  function createPrayerItem(member, message) {
-    return PrayerItem.create({
-      content: message,
-      memberId: member.id
-    });
+  function createPrayerItem(member, message, public) {
+      return PrayerItem.create({
+          content: message,
+          public: public,
+          memberId: member.id
+      });
   }
 
-  function addPrayerToSheets(member, prayer) {
+  function addPrayerToSheets(member, prayer, public) {
     return new Promise((resolve, reject) => {
-      googleSheets.addPrayer(phone, prayer, function (err) {
-        if (err) reject(new Error(err));
+      if(public) {
+        googleSheets.addPublicPrayer(phone, prayer, function (err) {
+          if (err) reject(new Error(err));
 
-        resolve("Prayer received!");
-      });
+          resolve("Prayer received and added publicly!");
+        });
+      } else {
+        googleSheets.addPrivatePrayer(phone, prayer, function (err) {
+          if (err) reject(new Error(err));
+
+          resolve("Prayer received and added privately!");
+        });
+      }
     });
   }
 
@@ -115,7 +135,7 @@ exports.webhook = (request, response) => {
 
     console.log(prayer);
     groupMe.sendGroupme(prayer)
-      .then((message) => processPrayer(member, prayer))
+      .then((message) => processPrayer(member, prayer, true))
       .catch((err) => {
         console.log(err);
         return respond("Something went wrong!");

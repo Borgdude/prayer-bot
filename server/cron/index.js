@@ -19,7 +19,7 @@ exports.updateMembers = new CronJob('0 0 * * 7', function(){
   .then((members) => {
     for(m in members){
       members[m].sendUpdateMessage("Your prayer: \"" + members[m].prayerItems[0].content + "\" currently has been prayed for " 
-        + members[m].prayerItems[0].prayedForNumber + " times.\n\nText: \"update " + members[m].prayerItems[0].id + " [update here]\" to give an update about your prayer request");
+        + members[m].prayerItems[0].prayedForNumber + " times.\n\nText \"update " + members[m].prayerItems[0].id + " [update here]\" to give an update about your prayer request");
     }
   })
   .catch((err) => console.log(err));
