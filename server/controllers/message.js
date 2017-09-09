@@ -19,8 +19,7 @@ exports.webhook = (request, response) => {
   })
     .then((member) => {
       if (!member) {
-        respond("You are now in the Central Baptist Youth Ministry's prayer request program. \
-        Say \"pray [prayer here]\" to submit a prayer. Say \"commands\" for commmands.");
+        respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say \"pray [public\\private] [prayer here]\" to submit a prayer. Say \"commands\" for commmands. View the public prayers at http://pray-link.com");
         return createMember(member, phone);
       } else {
         processMessage(member);
@@ -47,16 +46,19 @@ exports.webhook = (request, response) => {
     switch (msg.split(' ', 1)[0]) {
       case "commands":
         respond("Available commands:\n\
-                \"about\": Information about the bot.\n\
-                \"pray [public/private] [prayer here]\": Use this to submit a prayer.\n\
-                \"ayy\": lmao\n\
-                \"urgent [prayer here]\": Submit a prayer that will be looked at immediately.\n\
-                \"list [number]\": View prayers you have submitted.\n\
-                \"update [prayer number] [content]\": Update a prayer you submitted to update people about your prayer.");
+\"about\": Information about the bot.\n\
+\"pray [public/private] [prayer here]\": Use this to submit a prayer.\n\
+\"ayy\": lmao\n\
+\"urgent [prayer here]\": Submit a prayer that will be looked at immediately.\n\
+\"list [number]\": View prayers you have submitted.\n\
+\"update [prayer number] [content]\": Update a prayer you submitted to update people about your prayer.\n\
+\"link\": Get the google sheets and website links.");
         break;
       case "about":
         respond("This bot was created by Jake Gutierrez.");
         break;
+	  case "link":
+		respond("Google Sheets: https://goo.gl/R4z9Lt\nWebsite: http://pray-link.com");
       case "pray":
         processPrayer(member, filterPrayer(msg), true);
         break;
@@ -94,7 +96,7 @@ exports.webhook = (request, response) => {
     Member.findOne({
       where: { phoneNumber: phone }
     })
-      .then((member) => createPrayerItem(member, message, public))
+      .then((member) => createPrayerItem(member, prayer, public))
       .then((member) => addPrayerToSheets(member, prayer.capitalize(), public))
       .then((message) => respond(message))
       .catch((error) => {

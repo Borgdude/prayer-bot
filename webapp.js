@@ -11,11 +11,20 @@ var config = require('./config');
 var twilio = require('twilio');
 var session = require('express-session');
 var NodeCacheStore = require('passwordless-nodecache');
+var redis   = require("redis");
+var RedisStore = require('connect-redis')(session);
+var client  = redis.createClient();
 
 var jobs = require("./server/cron");
 
 var app = express();
 app.use(session({
+  store: new RedisStore({
+    host: 'localhost',
+    port: 6379,
+    client: client,
+    ttl: 260
+  }),
   secret: 'keyboard cat',
   resave: true,
   saveUninitialized: true
