@@ -1,7 +1,6 @@
 var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
-var session = require('express-session');
 var flash = require('connect-flash');
 var morgan = require('morgan');
 var config = require('./config');
@@ -11,49 +10,44 @@ var config = require('./config');
 var twilio = require('twilio');
 var session = require('express-session');
 var NodeCacheStore = require('passwordless-nodecache');
-var redis   = require("redis");
-var RedisStore = require('connect-redis')(session);
-var client  = redis.createClient();
+var cookieParser = require('cookie-parser');
 
 var jobs = require("./server/cron");
+var MemoryStore = require('session-memory-store')(session);
+
 
 var app = express();
 app.use(session({
-  store: new RedisStore({
-    host: 'localhost',
-    port: 6379,
-    client: client,
-    ttl: 260
-  }),
   secret: 'keyboard cat',
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MemoryStore()
 }));
 
 var client = twilio(config.accountSid, config.authToken);
 
-passwordless.init(new NodeCacheStore());
-
-passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
-  var options = {
-    to: recipient,
-    from: config.twilioNumber,
-    body: "Please use this token to login: " + tokenToSend
-  };
-  client.sendMessage(options, function(err, response){
-    if(err){
-      console.log(err);
-      callback(err);
-    } else {
-      console.log(response);
-      callback(null);
-    }
-  })
-}, { numberToken: {max: 999999}});
+// passwordless.init(new NodeCacheStore());
+//
+// passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
+//   var options = {
+//     to: recipient,
+//     from: config.twilioNumber,
+//     body: "Please use this token to login: " + tokenToSend
+//   };
+//   client.sendMessage(options, function(err, response){
+//     if(err){
+//       console.log(err);
+//       callback(err);
+//     } else {
+//       console.log(response);
+//       callback(null);
+//     }
+//   })
+// }, { numberToken: {max: 999999}});
     
 
-app.use(passwordless.sessionSupport());
-app.use(passwordless.acceptToken());
+// app.use(passwordless.sessionSupport());
+// app.use(passwordless.acceptToken());
 // Create Express web app
 
 app.set('view engine', 'jade');
@@ -81,11 +75,6 @@ const authCheckMiddleware = require('./server/middleware/auth-check');
 app.use('/api', authCheckMiddleware);
 
 // Create and manage HTTP sessions for all requests
-app.use(session({
-    secret: config.secret,
-    resave: true,
-    saveUninitialized: true
-}));
 
 // Use connect-flash to persist informational messages across redirects
 app.use(flash());
