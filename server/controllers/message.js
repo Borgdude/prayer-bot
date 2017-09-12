@@ -57,8 +57,9 @@ exports.webhook = (request, response) => {
       case "about":
         respond("This bot was created by Jake Gutierrez.");
         break;
-	  case "link":
-		respond("Google Sheets: https://goo.gl/R4z9Lt\nWebsite: http://pray-link.com");
+      case "link":
+        respond("Google Sheets: https://goo.gl/R4z9Lt\nWebsite: http://pray-link.com");
+        break;
       case "pray":
         processPrayer(member, filterPrayer(msg), true);
         break;
