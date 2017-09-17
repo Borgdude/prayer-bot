@@ -47,7 +47,7 @@ exports.webhook = (request, response) => {
       case "commands":
         respond("Available commands:\n\
 \"about\": Information about the bot.\n\
-\"pray [public/private] [prayer here]\": Use this to submit a prayer.\n\
+\"pray [prayer here]\": Use this to submit a prayer.\n\
 \"ayy\": lmao\n\
 \"urgent [prayer here]\": Submit a prayer that will be looked at immediately.\n\
 \"list [number]\": View prayers you have submitted.\n\
