@@ -19,7 +19,7 @@ exports.webhook = (request, response) => {
   })
     .then((member) => {
       if (!member) {
-        respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say \"pray [public\\private] [prayer here]\" to submit a prayer. Say \"commands\" for commmands. View the public prayers at http://pray-link.com");
+        respond("You are now in the Central Baptist Youth Ministry's prayer request program. Say \"pray [prayer here]\" to submit a prayer. Say \"commands\" for commands. View the public prayers at http://pray-link.com");
         return createMember(member, phone);
       } else {
         processMessage(member);
@@ -55,7 +55,7 @@ exports.webhook = (request, response) => {
 \"link\": Get the google sheets and website links.");
         break;
       case "about":
-        respond("This bot was created by Jake Gutierrez.");
+        respond("This bot was created by Jake Gutierrez. For questions or feedback contact Jake at: 979-676-3030. If you want to help with the application contact Jake or visit: https://github.com/jakeryang/prayer-bot");
         break;
       case "link":
         respond("Google Sheets: https://goo.gl/R4z9Lt\nWebsite: http://pray-link.com");
@@ -76,7 +76,7 @@ exports.webhook = (request, response) => {
         updatePrayer(msg);
         break;
       default:
-        respond("Command not found. Type 'commands' for avaiable commands");
+        respond("Command not found. Type 'commands' for available commands");
     }
   }
 
@@ -84,26 +84,31 @@ exports.webhook = (request, response) => {
     var prayer = message;
     var public = true;
 
-    var arg = message.split(' ')[0];
+    if(message.length <= 1) {
 
-    if (arg.toLowerCase() === "public"){
-      public = true;
-      prayer = prayer.replace(arg + " ", '');
-    } else if (arg.toLowerCase() === "private"){
-      public = false;
-      prayer = prayer.replace(arg + " ", '');
+      var arg = message.split(' ')[0];
+
+      if (arg.toLowerCase() === "public") {
+        public = true;
+        prayer = prayer.replace(arg + " ", '');
+      } else if (arg.toLowerCase() === "private") {
+        public = false;
+        prayer = prayer.replace(arg + " ", '');
+      }
+
+      Member.findOne({
+          where: {phoneNumber: phone}
+        })
+        .then((member) => createPrayerItem(member, prayer, public))
+        .then((member) => addPrayerToSheets(member, prayer.capitalize(), public))
+        .then((message) => respond(message))
+        .catch((error) => {
+          console.log(error);
+          return respond("Prayer didn\'t really work.");
+        });
+    } else {
+      return respond("Your prayer isn\'t long enough, try again.")
     }
-
-    Member.findOne({
-      where: { phoneNumber: phone }
-    })
-      .then((member) => createPrayerItem(member, prayer, public))
-      .then((member) => addPrayerToSheets(member, prayer.capitalize(), public))
-      .then((message) => respond(message))
-      .catch((error) => {
-        console.log(error);
-        return respond("Prayer didn\'t really work.");
-      });
   }
 
   function createPrayerItem(member, message, public) {
