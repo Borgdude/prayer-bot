@@ -84,7 +84,7 @@ exports.webhook = (request, response) => {
     var prayer = message;
     var public = true;
 
-    if(message.length <= 1) {
+    if(message.length >= 1) {
 
       var arg = message.split(' ')[0];
 

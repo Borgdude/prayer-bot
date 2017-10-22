@@ -26,28 +26,22 @@ app.use(session({
 
 var client = twilio(config.accountSid, config.authToken);
 
-// passwordless.init(new NodeCacheStore());
-//
-// passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
-//   var options = {
-//     to: recipient,
-//     from: config.twilioNumber,
-//     body: "Please use this token to login: " + tokenToSend
-//   };
-//   client.sendMessage(options, function(err, response){
-//     if(err){
-//       console.log(err);
-//       callback(err);
-//     } else {
-//       console.log(response);
-//       callback(null);
-//     }
-//   })
-// }, { numberToken: {max: 999999}});
+passwordless.init(new NodeCacheStore());
+
+passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
+  var options = {
+    to: recipient,
+    from: config.twilioNumber,
+    body: "Please use this token to login: " + tokenToSend
+  };
+  client.messages.create(options)
+    .then((message) => console.log(message.sid));
+
+}, { numberToken: {max: 999999}});
     
 
-// app.use(passwordless.sessionSupport());
-// app.use(passwordless.acceptToken());
+app.use(passwordless.sessionSupport());
+app.use(passwordless.acceptToken());
 // Create Express web app
 
 app.set('view engine', 'jade');
